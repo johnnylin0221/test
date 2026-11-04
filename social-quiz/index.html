@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>寶島社會大冒險</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: a "闖關護照" — single centered column; units are passport pages with red ink stamps, games sit on a sea-blue chart ground. */
+:root{
+  --sea:#e6f1f3; --paper:#ffffff; --ink:#1c3243; --muted:#587082; --line:#c9dde2; --tint:#d6eaee;
+  --stamp:#c43d2b; --leaf:#24845a; --sun:#e8a92c;
+  --display:"Huninn","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sea:#0d1b24; --paper:#142836; --ink:#e4eef2; --muted:#98b0be; --line:#26404f; --tint:#1b3444;
+  --stamp:#ff7b64; --leaf:#5ccb91; --sun:#f3c25a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sea:#0d1b24; --paper:#142836; --ink:#e4eef2; --muted:#98b0be; --line:#26404f; --tint:#1b3444;
+  --stamp:#ff7b64; --leaf:#5ccb91; --sun:#f3c25a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--sea);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:880px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:14px;border-bottom:1px dashed var(--line);margin-bottom:24px}
+.brand{font-family:var(--display);font-size:20px;background:none;border:0;padding:0}
+.bar .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:4px 12px;font-size:14px}
+.chip b{color:var(--stamp);font-variant-numeric:tabular-nums}
+
+.hero{display:grid;gap:8px;margin-bottom:28px}
+.eyebrow{margin:0;font-size:13px;letter-spacing:.12em;color:var(--muted)}
+.hero h1{font-family:var(--display);font-size:clamp(34px,7vw,52px);line-height:1.15;font-weight:400}
+.hero h1 em{font-style:normal;color:var(--stamp)}
+.lede{margin:0;max-width:34em;color:var(--muted)}
+
+.sec{font-family:var(--display);font-weight:400;font-size:20px;margin:28px 0 12px}
+.units{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:560px){.units{grid-template-columns:repeat(2,1fr)}}
+.unit{display:grid;justify-items:start;gap:4px;text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:14px;transition:border-color .15s,transform .15s}
+.unit:hover{transform:translateY(-2px)}
+.unit.on{border-color:var(--ink)}
+.unit .no{font-size:12px;letter-spacing:.1em;color:var(--muted)}
+.unit strong{font-size:16px;line-height:1.35}
+.stars{color:var(--sun);letter-spacing:2px;font-size:15px}
+.stars i{font-style:normal;color:var(--line)}
+.stamp{width:62px;height:62px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;font-family:var(--display);font-size:15px;color:var(--muted);margin-bottom:6px;text-align:center;line-height:1.1}
+.stamp.got{border:4px double var(--stamp);color:var(--stamp);transform:rotate(-12deg);background:color-mix(in srgb,var(--stamp) 9%,transparent)}
+
+.modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.mode{display:grid;gap:4px;text-align:left;background:var(--ink);color:var(--paper);border:0;border-radius:14px;padding:16px 16px 18px}
+.mode .big{font-family:var(--display);font-size:22px}
+.mode small{opacity:.8;font-size:14px}
+.mode.alt{background:var(--paper);color:var(--ink);border:2px solid var(--line)}
+.mode:hover{filter:brightness(1.08)}
+.note{margin-top:28px;font-size:13px;color:var(--muted)}
+@media (max-width:440px){.bar{gap:8px}.brand{font-size:18px}.chip{font-size:13px;padding:3px 10px}}
+
+/* play */
+.hud{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-bottom:10px;font-size:15px}
+.hud .title{font-weight:700;flex:1;min-width:0}
+.tab{font-variant-numeric:tabular-nums}
+.link{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.hearts{color:var(--stamp);letter-spacing:2px}
+.hearts i{font-style:normal;color:var(--line)}
+.timer{height:8px;background:var(--tint);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.timer div{height:100%;width:100%;background:var(--leaf);transition:width .1s linear}
+.timer div.low{background:var(--stamp)}
+.qcard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,4vw,30px)}
+.qtag{margin:0 0 6px;font-size:13px;color:var(--muted);letter-spacing:.06em}
+.q{font-family:var(--display);font-weight:400;font-size:clamp(21px,4vw,27px);line-height:1.45;margin-bottom:20px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;background:var(--sea);border:2px solid var(--line);border-radius:12px;padding:12px 14px;min-height:56px}
+.opt b{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);font-size:14px}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--leaf);background:color-mix(in srgb,var(--leaf) 16%,var(--paper))}
+.opt.right b{background:var(--leaf);color:var(--paper);border-color:var(--leaf)}
+.opt.wrong{border-color:var(--stamp);background:color-mix(in srgb,var(--stamp) 13%,var(--paper))}
+.opt.wrong b{background:var(--stamp);color:var(--paper);border-color:var(--stamp)}
+.fb{margin-top:18px;padding:14px 16px;border-radius:12px;border-left:5px solid var(--leaf);background:var(--tint);display:grid;gap:6px;justify-items:start}
+.fb.bad{border-left-color:var(--stamp)}
+.fb strong{font-size:17px}
+.fb p{margin:0}
+.btn{background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:10px 22px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.btn.danger{background:var(--stamp)}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+
+/* match */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
+.card{position:relative;aspect-ratio:4/3.4;max-width:100%;border-radius:12px;border:2px solid var(--line);background:var(--ink);color:var(--paper);padding:8px;display:grid;place-items:center;text-align:center;font-size:14px;line-height:1.35}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.card .back{font-family:var(--display);font-size:28px;opacity:.55}
+.card .face{display:none}
+.card.open,.card.done{background:var(--paper);color:var(--ink);animation:pop .25s ease-out}
+.card.open .back,.card.done .back{display:none}
+.card.open .face,.card.done .face{display:block}
+.card .face.t{font-family:var(--display);font-size:17px}
+.card.done{border-color:var(--leaf);background:color-mix(in srgb,var(--leaf) 14%,var(--paper))}
+.card.miss{border-color:var(--stamp)}
+.card .kind{position:absolute;top:5px;left:8px;font-size:11px;color:var(--muted)}
+
+/* true/false */
+.tfcard{background:var(--paper);border:3px solid var(--line);border-radius:18px;padding:clamp(22px,5vw,40px) clamp(18px,4vw,32px);min-height:170px;display:grid;place-items:center;text-align:center;transition:border-color .2s}
+.tfcard.ok{border-color:var(--leaf)}
+.tfcard.no{border-color:var(--stamp)}
+.tfcard p{font-family:var(--display);font-size:clamp(22px,4.4vw,30px);line-height:1.45;margin:0}
+.ox{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.ox button{border:0;border-radius:16px;padding:14px;display:grid;justify-items:center;gap:2px;color:var(--paper);font-size:15px}
+.ox .o{background:var(--leaf)}
+.ox .x{background:var(--stamp)}
+.ox span{font-family:var(--display);font-size:40px;line-height:1}
+.last{margin-top:14px;font-size:14px;color:var(--muted);min-height:3em}
+.last b{color:var(--stamp)}
+
+/* result & list */
+.res{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(20px,5vw,36px);display:grid;gap:14px;justify-items:center;text-align:center}
+.res h2{font-family:var(--display);font-weight:400;font-size:clamp(26px,5vw,34px)}
+.bigstars{font-size:46px;letter-spacing:6px;color:var(--sun);line-height:1}
+.bigstars i{font-style:normal;color:var(--line)}
+.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px}
+.stats div{display:grid}
+.stats b{font-size:26px;font-variant-numeric:tabular-nums}
+.stats span{font-size:13px;color:var(--muted)}
+.newstamp{width:110px;height:110px;font-size:22px;animation:thump .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes thump{from{transform:scale(2.2) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(-12deg);opacity:1}}
+.list{display:grid;gap:10px;margin-top:20px;text-align:left;width:100%}
+.item{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.item .u{font-size:12px;color:var(--muted)}
+.item p{margin:2px 0}
+.item .a{color:var(--leaf);font-weight:700}
+.empty{background:var(--paper);border:1px dashed var(--line);border-radius:14px;padding:28px;text-align:center;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="bar">
+    <button class="brand" data-act="home">寶島社會大冒險</button>
+    <span class="sp"></span>
+    <span class="chip">護照集章 <b id="stampCount">0/5</b></span>
+    <button class="chip" id="soundBtn" data-act="sound" aria-pressed="true">音效：開</button>
+  </header>
+  <main id="app"></main>
+</div>
+
+<script>
+/* ===== 題庫：mc = [題目, 正確答案, [錯誤選項×3], 解說]；tf = [敘述, 對/錯, 解說]；pairs = [名詞, 說明] ===== */
+const UNITS = [
+{ id:'u1', name:'臺灣的位置與範圍', short:'位置',
+  mc:[
+   ['臺灣位在哪一個洲的東部邊緣？','亞洲',['歐洲','非洲','大洋洲'],'臺灣位在亞洲大陸的東南方、太平洋的西側。'],
+   ['臺灣本島的東邊面臨哪一個海洋？','太平洋',['印度洋','大西洋','北冰洋'],'臺灣東岸直接面對廣大的太平洋。'],
+   ['臺灣和中國大陸之間隔著哪一個海峽？','臺灣海峽',['巴士海峽','麻六甲海峽','白令海峽'],'臺灣海峽位在臺灣西邊，澎湖群島就在海峽中。'],
+   ['臺灣南邊隔著巴士海峽，和哪一個國家相望？','菲律賓',['日本','韓國','越南'],'巴士海峽位在臺灣和菲律賓之間。'],
+   ['北回歸線通過臺灣的哪兩個縣市？','嘉義和花蓮',['臺北和宜蘭','臺中和臺東','高雄和屏東'],'嘉義水上、花蓮瑞穗和豐濱都設有北回歸線標誌。'],
+   ['地圖上用來表示南北位置的是什麼？','緯度',['經度','海拔','比例尺'],'緯度表示南北位置，經度表示東西位置。'],
+   ['臺灣本島大約位在東經幾度之間？','120～122 度',['100～102 度','130～132 度','140～142 度'],'臺灣本島大約在東經 120 到 122 度之間。'],
+   ['下列哪一個島嶼位在臺灣東南方的海上？','蘭嶼',['澎湖','金門','馬祖'],'蘭嶼和綠島都在臺灣東南方的太平洋上。'],
+   ['由 90 多座島嶼組成、位在臺灣海峽中的是？','澎湖群島',['蘭嶼','綠島','龜山島'],'澎湖群島由 90 多座大小島嶼組成。'],
+   ['金門和馬祖靠近哪裡？','中國大陸東南沿海',['菲律賓北部','日本南部','臺灣東部'],'金門、馬祖離中國大陸很近，離臺灣本島比較遠。'],
+   ['地球上 0 度的經線叫做什麼？','本初子午線',['赤道','北回歸線','國際換日線'],'本初子午線通過英國格林威治，是經度的起點。'],
+   ['臺灣位在地球的哪兩個半球？','北半球、東半球',['南半球、東半球','北半球、西半球','南半球、西半球'],'臺灣在赤道以北、本初子午線以東。'],
+   ['在東亞的島弧上，臺灣大約位在什麼位置？','中間',['最北端','最南端','不在島弧上'],'臺灣北邊有日本、琉球群島，南邊有菲律賓群島，剛好在中間。']
+  ],
+  tf:[
+   ['赤道把地球分成南、北兩個半球。',true,'赤道是 0 度緯線，以北是北半球、以南是南半球。'],
+   ['臺灣四面環海，是一座海島。',true,'臺灣四周都被海洋包圍。'],
+   ['綠島和蘭嶼位在臺灣西邊的臺灣海峽中。',false,'綠島和蘭嶼在臺灣東南方的太平洋上。'],
+   ['緯線是連接南極和北極的線。',false,'連接南北兩極的是經線；緯線和赤道平行。'],
+   ['北回歸線以南屬於熱帶。',true,'北回歸線是熱帶和溫帶的分界線。'],
+   ['馬祖靠近臺灣本島的東部海岸。',false,'馬祖靠近中國大陸的福建沿海。'],
+   ['臺灣位在亞洲大陸的東南方海上。',true,'臺灣在亞洲大陸東南方、太平洋西側。'],
+   ['經度可以用來表示東西方向的位置。',true,'經度表示東西位置，緯度表示南北位置。']
+  ],
+  pairs:[['經線','連接南北兩極的線'],['緯線','和赤道平行的線'],['澎湖群島','臺灣海峽中的群島'],['蘭嶼','東南方海上、達悟族居住的島'],['北回歸線','熱帶和溫帶的分界'],['太平洋','臺灣東邊的大洋'],['巴士海峽','臺灣和菲律賓之間'],['本初子午線','0 度經線']]
+},
+{ id:'u2', name:'臺灣的地形', short:'地形',
+  mc:[
+   ['臺灣最高的山峰是哪一座？','玉山',['雪山','合歡山','阿里山'],'玉山主峰約 3952 公尺，是臺灣也是東北亞最高峰。'],
+   ['臺灣面積最大的平原是？','嘉南平原',['屏東平原','蘭陽平原','花東縱谷平原'],'嘉南平原是臺灣最大的平原，也是重要的稻米產區。'],
+   ['位在宜蘭、形狀像三角形的平原是？','蘭陽平原',['嘉南平原','屏東平原','臺北平原'],'蘭陽平原由蘭陽溪沖積而成，形狀像三角形。'],
+   ['四周被山圍繞、中間低平的地形叫做？','盆地',['台地','丘陵','平原'],'臺北盆地、臺中盆地、埔里盆地都是盆地。'],
+   ['林口、桃園、八卦山一帶屬於哪一種地形？','台地',['盆地','平原','山地'],'台地頂部平坦，四周有比較陡的斜坡。'],
+   ['五大山脈中，位在最東邊、靠近太平洋的是？','海岸山脈',['中央山脈','雪山山脈','阿里山山脈'],'海岸山脈位在花東縱谷的東邊，緊鄰太平洋。'],
+   ['縱貫臺灣南北、被稱為「臺灣屋脊」的山脈是？','中央山脈',['海岸山脈','雪山山脈','阿里山山脈'],'中央山脈最長，是臺灣的屋脊，也是許多河川的發源地。'],
+   ['花東縱谷位在哪兩座山脈之間？','中央山脈和海岸山脈',['雪山山脈和玉山山脈','阿里山山脈和玉山山脈','雪山山脈和中央山脈'],'花東縱谷是夾在中央山脈和海岸山脈之間的狹長平原。'],
+   ['臺灣東部海岸最大的特色是？','山地緊鄰海洋，海岸陡峭',['沙灘寬廣，有很多沙洲','岬角和海灣交錯','有大片珊瑚礁'],'東部海岸山勢直接入海，海岸平直陡峭，稱為斷層海岸。'],
+   ['墾丁一帶常見的海岸類型是？','珊瑚礁海岸',['沙岸','岬灣海岸','斷層海岸'],'南部恆春半島沿海有許多珊瑚礁。'],
+   ['北部海岸（例如野柳）的特色是？','岬角和海灣交錯',['海岸平直陡峭','有很多潟湖','到處是珊瑚礁'],'北部海岸岩石軟硬不同，形成岬角和海灣交錯的岬灣海岸。'],
+   ['臺灣的山地和丘陵大約占全島面積的多少？','約三分之二',['約十分之一','約四分之一','幾乎全部'],'臺灣多山，山地和丘陵約占三分之二。'],
+   ['埔里盆地位在哪一個縣？','南投縣',['臺中市','嘉義縣','花蓮縣'],'埔里盆地在南投縣，接近臺灣的地理中心。'],
+   ['臺灣整體地勢的特色是？','中央高、四周低',['北部高、南部低','西部高、東部低','到處都一樣平'],'臺灣中央是高山，往四周海岸慢慢降低。']
+  ],
+  tf:[
+   ['西部海岸大多是沙岸，有很多沙洲和潟湖。',true,'西部海岸平直、坡度緩，多沙洲和潟湖。'],
+   ['臺灣的高山主要集中在西部沿海。',false,'高山集中在臺灣中部，西部沿海多平原。'],
+   ['台地的頂部平坦，四周有陡坡。',true,'這就是台地的特色，例如林口台地。'],
+   ['嘉南平原是臺灣最大的平原。',true,'嘉南平原是臺灣面積最大的平原。'],
+   ['雪山是臺灣最高的山峰。',false,'最高峰是玉山，雪山排第二。'],
+   ['丘陵的高度比山地低，坡度也比較平緩。',true,'丘陵起伏較小，常被開墾成茶園或果園。'],
+   ['花東縱谷位在雪山山脈和玉山山脈之間。',false,'花東縱谷在中央山脈和海岸山脈之間。'],
+   ['臺灣東部海岸平直陡峭，稱為斷層海岸。',true,'山地直接臨海，形成陡峭的海岸。']
+  ],
+  pairs:[['玉山','臺灣最高峰'],['中央山脈','臺灣屋脊'],['嘉南平原','臺灣最大平原'],['蘭陽平原','宜蘭的三角形平原'],['臺北盆地','四周有山、首都所在'],['林口台地','頂部平坦的台地'],['墾丁','珊瑚礁海岸'],['花東縱谷','兩座山脈之間的狹長平原']]
+},
+{ id:'u3', name:'臺灣的氣候與水文', short:'氣候',
+  mc:[
+   ['臺灣冬季吹的是哪一種季風？','東北季風',['西南季風','東南季風','西北季風'],'冬季吹東北季風，天氣比較冷。'],
+   ['臺灣夏季吹的是哪一種季風？','西南季風',['東北季風','東南季風','西北季風'],'夏季吹西南季風，帶來溫暖潮濕的空氣。'],
+   ['冬季時，臺灣哪一個地區最容易陰雨綿綿？','北部和東北部',['南部','西南部','澎湖'],'東北季風吹過海面帶來水氣，基隆、宜蘭冬天常下雨。'],
+   ['每年 5～6 月連續下雨的天氣稱為什麼？','梅雨',['颱風','寒流','午後雷陣雨'],'梅雨季常帶來連續多天的降雨。'],
+   ['夏、秋季帶來強風豪雨的天氣系統是？','颱風',['梅雨','寒流','東北季風'],'颱風會帶來災害，也帶來重要的雨水。'],
+   ['臺灣最長的河川是哪一條？','濁水溪',['高屏溪','淡水河','大甲溪'],'濁水溪全長約 187 公里，是臺灣最長的河川。'],
+   ['臺灣流域面積最大的河川是？','高屏溪',['濁水溪','淡水河','曾文溪'],'高屏溪的流域面積是全臺最大。'],
+   ['臺灣河川的特色是什麼？','河道短、坡度陡、水流急',['河道長、坡度緩','全年水量都一樣','大多南北流向'],'因為中央山脈高聳又靠近海，河川短而急。'],
+   ['臺灣河川夏季水量多、冬季水量少，主要原因是？','雨量大多集中在夏季',['夏季冰雪融化','冬季河川結冰','冬季海水倒灌'],'梅雨和颱風都集中在夏秋，所以夏季水量多。'],
+   ['為了儲存水源，人們常在河川上游興建什麼？','水庫',['港口','燈塔','機場'],'水庫可以蓄水、供水、灌溉和防洪。'],
+   ['流經臺北盆地的主要河川是？','淡水河',['濁水溪','高屏溪','蘭陽溪'],'淡水河由新店溪、基隆河、大漢溪匯流而成。'],
+   ['北回歸線以北的地區屬於哪一種氣候？','副熱帶季風氣候',['熱帶季風氣候','溫帶大陸性氣候','寒帶氣候'],'北回歸線以北是副熱帶季風氣候，以南是熱帶季風氣候。'],
+   ['爬山時，海拔越高，氣溫會怎樣？','越低',['越高','不會改變','先低後高'],'海拔每升高約 100 公尺，氣溫約下降 0.6 度。'],
+   ['臺灣容量最大的水庫是？','曾文水庫',['石門水庫','翡翠水庫','鯉魚潭水庫'],'曾文水庫是臺灣容量最大的水庫。']
+  ],
+  tf:[
+   ['臺灣的河川大多是東西流向。',true,'中央山脈南北縱走，河川多由中央往東、西兩邊流。'],
+   ['颱風只會帶來壞處，沒有任何好處。',false,'颱風也帶來豐沛雨水，是重要的水源。'],
+   ['冬季時，南部比北部更容易下雨。',false,'冬季東北季風讓北部和東北部容易下雨。'],
+   ['濁水溪是彰化縣和雲林縣的界河。',true,'濁水溪下游是彰化和雲林的分界。'],
+   ['海拔越高，氣溫就越高。',false,'海拔越高，氣溫越低。'],
+   ['臺灣雨量豐沛，但季節分布不平均。',true,'雨量集中在夏秋，冬春比較少。'],
+   ['水庫可以提供民生用水和農田灌溉用水。',true,'水庫有供水、灌溉、發電、防洪等功能。'],
+   ['高屏溪是臺灣最長的河川。',false,'最長的是濁水溪，高屏溪是流域面積最大。']
+  ],
+  pairs:[['東北季風','冬季的季風'],['西南季風','夏季的季風'],['梅雨','5～6 月連續降雨'],['颱風','夏秋的強風豪雨'],['濁水溪','臺灣最長河川'],['高屏溪','流域面積最大'],['曾文水庫','容量最大的水庫'],['淡水河','流經臺北盆地']]
+},
+{ id:'u4', name:'史前文化與原住民族', short:'史前',
+  mc:[
+   ['臺灣目前已知最早的史前文化是？','長濱文化',['大坌坑文化','圓山文化','十三行文化'],'長濱文化屬於舊石器時代，遺址在臺東長濱。'],
+   ['長濱文化的人主要使用哪一種工具？','打製石器',['磨製石器','鐵器','青銅器'],'舊石器時代的人把石頭敲打成工具，稱為打製石器。'],
+   ['大坌坑文化的陶器上有什麼特色紋路？','粗繩紋',['彩色花紋','文字','龍紋'],'大坌坑文化是新石器時代早期文化，以粗繩紋陶聞名。'],
+   ['圓山文化遺址最有名的發現是什麼？','貝塚',['石板棺','煉鐵遺跡','拼板舟'],'貝塚是古人吃剩的貝殼堆積成的小丘。'],
+   ['卑南文化遺址以出土大量什麼聞名？','石板棺',['貝塚','鐵器','銅錢'],'卑南遺址在臺東，出土上千具石板棺。'],
+   ['哪一個史前文化的人已經會煉鐵？','十三行文化',['長濱文化','大坌坑文化','卑南文化'],'十三行遺址在新北市八里，有煉鐵的遺跡。'],
+   ['考古學家主要靠什麼了解史前人類的生活？','遺址和出土文物',['古代的報紙','歷史課本','祖先寫的日記'],'史前時代沒有文字，只能從遺址和文物推測。'],
+   ['政府目前認定的臺灣原住民族共有幾族？','16 族',['9 族','10 族','20 族'],'目前政府認定的原住民族共有 16 族。'],
+   ['住在蘭嶼、會製作拼板舟的是哪一族？','達悟族',['阿美族','泰雅族','排灣族'],'達悟族以海洋文化為特色，有飛魚祭和拼板舟。'],
+   ['以「豐年祭」最為人熟知的是哪一族？','阿美族',['達悟族','賽夏族','布農族'],'阿美族主要住在花東地區，是人口最多的原住民族。'],
+   ['每兩年舉行一次「矮靈祭」的是哪一族？','賽夏族',['阿美族','布農族','魯凱族'],'賽夏族的矮靈祭每兩年小祭、每十年大祭。'],
+   ['以「八部合音」聞名，並有射耳祭的是哪一族？','布農族',['泰雅族','阿美族','達悟族'],'布農族的八部合音是祈禱小米豐收的歌聲。'],
+   ['以紋面文化和精美織布聞名的是哪一族？','泰雅族',['阿美族','達悟族','卑南族'],'泰雅族傳統上以紋面代表成年和能力。'],
+   ['排灣族視為祖靈象徵、常出現在雕刻上的動物是？','百步蛇',['老鷹','山豬','飛魚'],'百步蛇是排灣族重要的圖騰。'],
+   ['磨製石器和陶器開始出現，是在哪一個時代？','新石器時代',['舊石器時代','鐵器時代','現代'],'新石器時代的人開始磨製石器、製作陶器、從事農耕。']
+  ],
+  tf:[
+   ['史前時代是指還沒有文字記錄的時代。',true,'沒有文字記錄，所以要靠考古了解。'],
+   ['十三行文化的人已經會煉鐵。',true,'十三行遺址有煉鐵遺跡，屬於金屬器時代。'],
+   ['長濱文化的人已經會製作陶器。',false,'長濱文化是舊石器時代，還沒有陶器。'],
+   ['達悟族的飛魚祭和海洋生活關係密切。',true,'飛魚季是達悟族生活中重要的時節。'],
+   ['各原住民族的語言和文化都一樣。',false,'每一族都有自己的語言、祭典和文化。'],
+   ['卑南遺址位在臺東。',true,'卑南遺址位在臺東市，現在有史前文化博物館。'],
+   ['阿美族是人口最多的原住民族。',true,'阿美族主要分布在花蓮、臺東一帶。'],
+   ['看到考古遺址的文物，可以自己挖回家收藏。',false,'遺址受法律保護，發現文物要通報政府。']
+  ],
+  pairs:[['長濱文化','打製石器'],['大坌坑文化','粗繩紋陶'],['圓山文化','貝塚'],['卑南文化','石板棺'],['十三行文化','煉鐵'],['達悟族','拼板舟'],['布農族','八部合音'],['賽夏族','矮靈祭']]
+},
+{ id:'u5', name:'大航海時代與鄭氏時期', short:'航海',
+  mc:[
+   ['西方人航經臺灣時讚嘆的「福爾摩沙」是什麼意思？','美麗之島',['黃金之島','寶藏之島','東方之島'],'Formosa 在葡萄牙語是「美麗」的意思。'],
+   ['1624 年，荷蘭人占領臺灣的哪一個地方？','臺南（大員）',['基隆','淡水','高雄'],'荷蘭人以大員（今臺南安平）為據點。'],
+   ['荷蘭人在大員建立的城堡是？','熱蘭遮城',['普羅民遮城','聖多明哥城','聖薩爾瓦多城'],'熱蘭遮城就是今天的安平古堡。'],
+   ['荷蘭人在赤崁建立、今天稱為赤崁樓的是？','普羅民遮城',['熱蘭遮城','紅毛城','億載金城'],'普羅民遮城是荷蘭人的行政中心之一。'],
+   ['1626 年，西班牙人占領臺灣的哪一個地區？','北部（基隆）',['南部（臺南）','東部（花蓮）','澎湖'],'西班牙人在基隆和平島建聖薩爾瓦多城。'],
+   ['西班牙人在淡水建立的城堡是？','聖多明哥城',['熱蘭遮城','普羅民遮城','安平古堡'],'聖多明哥城的位置就是後來的淡水紅毛城。'],
+   ['1642 年，把西班牙人趕出臺灣的是？','荷蘭人',['鄭成功','清朝','日本人'],'荷蘭人北上打敗西班牙人，控制臺灣南北。'],
+   ['傳教士用羅馬拼音寫原住民族語言，留下的契約稱為？','新港文書',['臺灣通史','山海經','荷蘭日記'],'新港文書記錄了西拉雅族的語言。'],
+   ['荷蘭時期臺灣大量輸出、用來製作皮革的是？','鹿皮',['茶葉','樟腦','香蕉'],'當時臺灣梅花鹿很多，鹿皮大量外銷日本。'],
+   ['荷蘭人從中國沿海招募來臺灣開墾耕種的是？','漢人',['日本人','西班牙人','葡萄牙人'],'荷蘭人招募漢人來種稻米和甘蔗。'],
+   ['1662 年把荷蘭人趕出臺灣的是誰？','鄭成功',['施琅','陳永華','鄭經'],'鄭成功率軍圍攻熱蘭遮城，荷蘭人投降離開。'],
+   ['鄭氏時期建立臺灣第一座孔廟、推廣教育的是？','陳永華',['施琅','鄭成功','沈葆楨'],'陳永華建孔廟、設學校，推動教育。'],
+   ['鄭氏時期讓軍隊平時耕種、戰時作戰的制度叫做？','屯田',['科舉','保甲','徵兵'],'左營、新營、林鳳營等地名都和屯田有關。'],
+   ['1683 年率領清軍攻臺，結束鄭氏政權的是？','施琅',['鄭成功','陳永華','劉銘傳'],'施琅攻下澎湖後，鄭克塽投降。'],
+   ['大航海時代，歐洲人來到東亞的主要目的是？','貿易和傳教',['觀光旅遊','參加比賽','留學讀書'],'他們想取得香料、絲、瓷器等商品並傳播宗教。']
+  ],
+  tf:[
+   ['荷蘭人和西班牙人曾經分別占領臺灣的南部和北部。',true,'1626～1642 年間，荷蘭在南、西班牙在北。'],
+   ['熱蘭遮城就是今天的赤崁樓。',false,'熱蘭遮城是安平古堡；赤崁樓是普羅民遮城。'],
+   ['「左營」「新營」等地名和鄭氏時期的屯田有關。',true,'軍隊屯墾的地方留下了「營」字地名。'],
+   ['西班牙人統治臺灣的時間比荷蘭人長。',false,'西班牙約 16 年，荷蘭約 38 年。'],
+   ['鄭成功是從荷蘭人手中取得臺灣的。',true,'1662 年荷蘭人投降，離開臺灣。'],
+   ['新港文書是用羅馬拼音書寫原住民族語言。',true,'傳教士教西拉雅族用羅馬字拼寫自己的語言。'],
+   ['荷蘭人統治臺灣大約 38 年。',true,'從 1624 年到 1662 年，大約 38 年。'],
+   ['鄭氏政權最後被日本人打敗。',false,'鄭氏政權在 1683 年被清朝打敗。']
+  ],
+  pairs:[['熱蘭遮城','今安平古堡'],['普羅民遮城','今赤崁樓'],['聖多明哥城','西班牙人建於淡水'],['新港文書','羅馬拼音契約'],['鹿皮','荷蘭時期重要出口'],['鄭成功','1662 年趕走荷蘭人'],['陳永華','建臺灣第一座孔廟'],['施琅','1683 年率清軍攻臺']]
+}
+];
+
+/* ===== 工具 ===== */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const starStr = n => '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i>';
+const unitsOf = sel => sel === 'all' ? UNITS : UNITS.filter(u => u.id === sel);
+const selName = sel => sel === 'all' ? '全部單元混合' : UNITS.find(u => u.id === sel).name;
+
+const KEY = 'g5-social-review-v1';
+let save = { best: {}, stamps: {}, wrong: [], sound: true };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) save = Object.assign(save, s); } catch (e) {}
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} updateBar(); }
+function addWrong(id) { if (!save.wrong.includes(id)) save.wrong.push(id); }
+function removeWrong(id) { save.wrong = save.wrong.filter(x => x !== id); }
+
+let ac = null;
+function beep(kind) {
+  if (!save.sound) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const seq = { ok: [[660, 0], [880, .09]], bad: [[230, 0], [175, .12]], win: [[523, 0], [659, .11], [784, .22], [1046, .33]], flip: [[520, 0]] }[kind] || [[500, 0]];
+    seq.forEach(([f, t]) => {
+      const o = ac.createOscillator(), g = ac.createGain(), at = ac.currentTime + t;
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(.18, at + .02); g.gain.exponentialRampToValueAtTime(.0001, at + .2);
+      o.connect(g).connect(ac.destination); o.start(at); o.stop(at + .22);
+    });
+  } catch (e) {}
+}
+
+let timers = [];
+function stopTimers() { timers.forEach(clearInterval); timers.forEach(clearTimeout); timers = []; }
+function updateBar() {
+  $('#stampCount').textContent = Object.keys(save.stamps).filter(k => save.stamps[k]).length + '/' + UNITS.length;
+  const b = $('#soundBtn'); b.textContent = '音效：' + (save.sound ? '開' : '關'); b.setAttribute('aria-pressed', save.sound);
+}
+
+function mcObj(u, i) { const [q, c, w, exp] = u.mc[i]; const opts = shuffle([c, ...w]); return { id: `${u.id}|mc|${i}`, uname: u.name, q, opts, ans: opts.indexOf(c), exp }; }
+function tfObj(u, i) { const [s, b, exp] = u.tf[i]; return { id: `${u.id}|tf|${i}`, uname: u.name, q: '是非題：' + s, s, b, opts: ['對', '錯'], ans: b ? 0 : 1, exp }; }
+function fromId(id) { const [uid, t, i] = id.split('|'); const u = UNITS.find(x => x.id === uid); if (!u) return null; const arr = t === 'mc' ? u.mc : u.tf; if (!arr[+i]) return null; return t === 'mc' ? mcObj(u, +i) : tfObj(u, +i); }
+
+/* ===== 首頁 ===== */
+let sel = 'all';
+function home() {
+  stopTimers(); view = 'home';
+  const cards = UNITS.map((u, i) => `
+    <button class="unit ${sel === u.id ? 'on' : ''}" data-act="sel" data-id="${u.id}" aria-pressed="${sel === u.id}">
+      <span class="stamp ${save.stamps[u.id] ? 'got' : ''}">${save.stamps[u.id] ? u.short + '<br>過關' : u.short}</span>
+      <span class="no">單元 ${i + 1}</span><strong>${u.name}</strong>
+      <span class="stars" aria-label="最佳 ${save.best[u.id] || 0} 顆星">${starStr(save.best[u.id] || 0)}</span>
+    </button>`).join('');
+  app.innerHTML = `
+  <section class="hero">
+    <p class="eyebrow">五年級上學期・社會科期中考複習</p>
+    <h1>闖關、配對、快問快答<br>把<em>臺灣</em>記進腦袋裡</h1>
+    <p class="lede">先選一個單元，再挑一種玩法。每個單元的「闖關問答」拿到兩顆星以上，就能在護照上蓋一個章，五個章全部集滿就準備好考試了！</p>
+  </section>
+  <h2 class="sec">1. 選單元</h2>
+  <div class="units">${cards}
+    <button class="unit ${sel === 'all' ? 'on' : ''}" data-act="sel" data-id="all" aria-pressed="${sel === 'all'}">
+      <span class="stamp">全部</span><span class="no">總複習</span><strong>全部單元混合</strong><span class="stars" style="color:var(--muted);letter-spacing:0;font-size:13px">隨機出題</span>
+    </button>
+  </div>
+  <h2 class="sec">2. 選玩法 <span style="font-size:14px;color:var(--muted);font-family:var(--body)">目前：${selName(sel)}</span></h2>
+  <div class="modes">
+    <button class="mode" data-act="quiz"><span class="big">闖關問答</span><small>10 題選擇題・3 顆愛心・答越快分數越高</small></button>
+    <button class="mode" data-act="match"><span class="big">翻牌配對</span><small>翻開 12 張牌，把名詞和說明配成對</small></button>
+    <button class="mode" data-act="tf"><span class="big">快問快答</span><small>60 秒是非題，看你能答對幾題</small></button>
+    <button class="mode alt" data-act="wrongbook"><span class="big">錯題本</span><small>${save.wrong.length ? `目前有 ${save.wrong.length} 題要再練習` : '答錯的題目會自動收進來'}</small></button>
+  </div>
+  <p class="note">題目依五年級上學期社會科常見範圍整理（臺灣的位置、地形、氣候水文、史前文化與原住民族、大航海時代與鄭氏時期）。各版本課本的單元名稱和進度不同，請以老師上課內容為準。電腦可用鍵盤 1～4 選答案、Enter 下一題；快問快答用 O／X 鍵。</p>`;
+}
+
+/* ===== 闖關問答 ===== */
+let Q = null, view = 'home';
+function startQuiz(review) {
+  let list;
+  if (review) {
+    list = shuffle(save.wrong).map(fromId).filter(Boolean).slice(0, 20);
+    if (!list.length) return wrongbook();
+  } else {
+    const pool = []; unitsOf(sel).forEach(u => u.mc.forEach((_, i) => pool.push(mcObj(u, i))));
+    list = shuffle(pool).slice(0, 10);
+  }
+  Q = { review, unit: review ? null : sel, title: review ? '錯題重練' : selName(sel), list, idx: 0, hearts: 3, score: 0, combo: 0, bestCombo: 0, correct: 0, misses: [], done: false, t: 25 };
+  renderQ();
+}
+function renderQ() {
+  stopTimers(); view = 'quiz';
+  const it = Q.list[Q.idx];
+  app.innerHTML = `
+  <div class="hud">
+    <button class="link" data-act="home">← 回首頁</button>
+    <span class="title">${Q.title}</span>
+    <span class="tab">第 ${Q.idx + 1} / ${Q.list.length} 題</span>
+    ${Q.review ? '' : `<span class="hearts" id="hearts" aria-label="剩下 ${Q.hearts} 顆愛心">${'♥'.repeat(Q.hearts)}<i>${'♥'.repeat(3 - Q.hearts)}</i></span>`}
+    <span class="tab" id="score">${Q.score} 分</span>
+  </div>
+  ${Q.review ? '' : '<div class="timer" aria-hidden="true"><div id="tbar"></div></div>'}
+  <article class="qcard">
+    <p class="qtag">${it.uname}</p>
+    <h2 class="q">${it.q}</h2>
+    <div class="opts">${it.opts.map((o, k) => `<button class="opt" data-act="ans" data-k="${k}"><b>${'ABCD'[k]}</b><span>${o}</span></button>`).join('')}</div>
+    <div id="fb"></div>
+  </article>`;
+  Q.done = false; Q.t = 25;
+  if (!Q.review) {
+    timers.push(setInterval(() => {
+      Q.t = Math.max(0, Q.t - .1);
+      const bar = $('#tbar'); if (bar) { bar.style.width = (Q.t / 25 * 100) + '%'; bar.classList.toggle('low', Q.t < 7); }
+      if (Q.t <= 0) answer(-1);
+    }, 100));
+  }
+}
+function answer(k) {
+  if (Q.done) return; Q.done = true; stopTimers();
+  const it = Q.list[Q.idx], ok = k === it.ans;
+  document.querySelectorAll('.opt').forEach((b, i) => { b.disabled = true; if (i === it.ans) b.classList.add('right'); else if (i === k) b.classList.add('wrong'); });
+  if (ok) {
+    Q.correct++; Q.combo++; Q.bestCombo = Math.max(Q.bestCombo, Q.combo);
+    Q.score += 100 + (Q.review ? 0 : Math.round(Q.t) * 4) + (Q.combo > 1 ? (Q.combo - 1) * 20 : 0);
+    if (Q.review) removeWrong(it.id);
+    beep('ok');
+  } else {
+    Q.combo = 0; if (!Q.review) Q.hearts--; Q.misses.push(it); addWrong(it.id); beep('bad');
+  }
+  persist();
+  const end = Q.idx + 1 >= Q.list.length || Q.hearts <= 0;
+  const head = ok ? (Q.combo > 1 ? `答對了！連續答對 ${Q.combo} 題` : '答對了！') : (k < 0 ? '時間到！' : '差一點！');
+  $('#fb').innerHTML = `<div class="fb ${ok ? '' : 'bad'}" role="status"><strong>${head}</strong>${ok ? '' : `<p>正確答案是「${it.opts[it.ans]}」。</p>`}<p>${it.exp}</p><button class="btn" data-act="next" id="nextBtn">${end ? (Q.hearts <= 0 ? '愛心用完了，看結果' : '看結果') : '下一題'} →</button></div>`;
+  const s = $('#score'); if (s) s.textContent = Q.score + ' 分';
+  const h = $('#hearts'); if (h) h.innerHTML = '♥'.repeat(Q.hearts) + '<i>' + '♥'.repeat(3 - Q.hearts) + '</i>';
+  $('#nextBtn').focus({ preventScroll: true });
+}
+function nextQ() {
+  Q.idx++;
+  if (Q.idx >= Q.list.length || Q.hearts <= 0) return quizResult();
+  renderQ();
+}
+function quizResult() {
+  const rate = Q.correct / Q.list.length;
+  const stars = rate >= .9 ? 3 : rate >= .7 ? 2 : rate >= .5 ? 1 : 0;
+  let newStamp = null;
+  if (!Q.review && Q.unit !== 'all') {
+    save.best[Q.unit] = Math.max(save.best[Q.unit] || 0, stars);
+    if (stars >= 2 && !save.stamps[Q.unit]) { save.stamps[Q.unit] = true; newStamp = UNITS.find(u => u.id === Q.unit); }
+    persist();
+  }
+  const msg = stars === 3 ? '太厲害了，完全掌握！' : stars === 2 ? '很不錯，再複習一下錯題就更穩了！' : stars === 1 ? '有進步空間，看看下面的解說再挑戰一次！' : '先別灰心，從錯題本開始慢慢練！';
+  showResult({
+    title: Q.review ? '錯題重練完成' : Q.hearts <= 0 ? '愛心用完了' : '闖關完成', stars, msg, newStamp,
+    stats: [['答對', `${Q.correct}/${Q.list.length}`], ['分數', Q.score], ['最高連對', Q.bestCombo]],
+    misses: Q.misses.map(it => ({ u: it.uname, q: it.q, a: it.opts[it.ans], exp: it.exp })),
+    again: Q.review ? 'review' : 'quiz'
+  });
+}
+
+/* ===== 翻牌配對 ===== */
+let M = null;
+function startMatch() {
+  stopTimers(); view = 'match';
+  const pool = []; unitsOf(sel).forEach(u => u.pairs.forEach(p => pool.push({ t: p[0], d: p[1], u: u.name })));
+  const pick = shuffle(pool).slice(0, 6);
+  const cards = shuffle(pick.flatMap((p, k) => [{ k, side: 't', text: p.t }, { k, side: 'd', text: p.d }]));
+  M = { cards, open: [], moves: 0, found: 0, pairs: pick.length, start: Date.now(), lock: false };
+  app.innerHTML = `
+  <div class="hud">
+    <button class="link" data-act="home">← 回首頁</button>
+    <span class="title">翻牌配對・${selName(sel)}</span>
+    <span class="tab" id="mPairs">配對 0/${M.pairs}</span>
+    <span class="tab" id="mMoves">翻了 0 次</span>
+    <span class="tab" id="mTime">0 秒</span>
+  </div>
+  <p style="margin:0 0 12px;color:var(--muted);font-size:14px">每次翻兩張，把「名詞」和它的「說明」配成一對。</p>
+  <div class="grid">${cards.map((c, n) => `<button class="card" data-act="flip" data-n="${n}" aria-label="第 ${n + 1} 張牌"><span class="back">?</span><span class="kind" hidden>${c.side === 't' ? '名詞' : '說明'}</span><span class="face ${c.side}">${c.text}</span></button>`).join('')}</div>`;
+  timers.push(setInterval(() => { const el = $('#mTime'); if (el) el.textContent = Math.round((Date.now() - M.start) / 1000) + ' 秒'; }, 500));
+}
+function flip(n) {
+  if (M.lock) return;
+  const c = M.cards[n], el = document.querySelector(`.card[data-n="${n}"]`);
+  if (c.done || M.open.includes(n)) return;
+  M.open.push(n); el.classList.add('open'); el.querySelector('.kind').hidden = false; el.setAttribute('aria-label', c.text); beep('flip');
+  if (M.open.length < 2) return;
+  M.moves++; $('#mMoves').textContent = `翻了 ${M.moves} 次`;
+  const [a, b] = M.open.map(i => M.cards[i]);
+  const els = M.open.map(i => document.querySelector(`.card[data-n="${i}"]`));
+  if (a.k === b.k && a.side !== b.side) {
+    a.done = b.done = true; els.forEach(e => { e.classList.remove('open'); e.classList.add('done'); e.disabled = true; });
+    M.open = []; M.found++; $('#mPairs').textContent = `配對 ${M.found}/${M.pairs}`; beep('ok');
+    if (M.found === M.pairs) timers.push(setTimeout(matchResult, 600));
+  } else {
+    M.lock = true; els.forEach(e => e.classList.add('miss')); beep('bad');
+    timers.push(setTimeout(() => {
+      els.forEach(e => { e.classList.remove('open', 'miss'); e.querySelector('.kind').hidden = true; });
+      M.open = []; M.lock = false;
+    }, 950));
+  }
+}
+function matchResult() {
+  const secs = Math.round((Date.now() - M.start) / 1000);
+  const stars = M.moves <= M.pairs + 3 ? 3 : M.moves <= M.pairs + 7 ? 2 : 1;
+  const pairs = []; const seen = new Set();
+  M.cards.forEach(c => { if (!seen.has(c.k)) { seen.add(c.k); const t = M.cards.find(x => x.k === c.k && x.side === 't'), d = M.cards.find(x => x.k === c.k && x.side === 'd'); pairs.push({ u: '', q: t.text, a: d.text, exp: '' }); } });
+  showResult({ title: '全部配對完成', stars, msg: stars === 3 ? '記憶力超強！' : '再玩一次，試試用更少次數完成！', stats: [['翻牌次數', M.moves], ['花費時間', secs + ' 秒']], misses: pairs, listTitle: '這次配對的名詞', again: 'match' });
+}
+
+/* ===== 快問快答（是非題） ===== */
+let T = null;
+function startTF() {
+  stopTimers(); view = 'tf';
+  const pool = []; unitsOf(sel).forEach(u => u.tf.forEach((_, i) => pool.push(tfObj(u, i))));
+  T = { base: pool, deck: shuffle(pool), i: 0, left: 60, correct: 0, total: 0, combo: 0, bestCombo: 0, misses: [], over: false };
+  app.innerHTML = `
+  <div class="hud">
+    <button class="link" data-act="home">← 回首頁</button>
+    <span class="title">快問快答・${selName(sel)}</span>
+    <span class="tab" id="tLeft">剩 60 秒</span>
+    <span class="tab" id="tScore">答對 0 題</span>
+  </div>
+  <div class="timer" aria-hidden="true"><div id="tbar"></div></div>
+  <div class="tfcard" id="tfcard"><p id="tfq"></p></div>
+  <div class="ox">
+    <button class="o" data-act="tfa" data-v="1"><span>O</span>對（O 鍵）</button>
+    <button class="x" data-act="tfa" data-v="0"><span>X</span>錯（X 鍵）</button>
+  </div>
+  <p class="last" id="tfLast" aria-live="polite">看到敘述就快速判斷對或錯！</p>`;
+  showTF();
+  timers.push(setInterval(() => {
+    T.left = Math.max(0, T.left - .1);
+    $('#tbar').style.width = (T.left / 60 * 100) + '%'; $('#tbar').classList.toggle('low', T.left < 10);
+    $('#tLeft').textContent = `剩 ${Math.ceil(T.left)} 秒`;
+    if (T.left <= 0) tfEnd();
+  }, 100));
+}
+function showTF() { if (T.i >= T.deck.length) { T.deck = shuffle(T.base); T.i = 0; } $('#tfq').textContent = T.deck[T.i].s; }
+function tfAnswer(v) {
+  if (T.over) return;
+  const it = T.deck[T.i], ok = v === it.b; T.total++;
+  const card = $('#tfcard'); card.classList.remove('ok', 'no'); void card.offsetWidth; card.classList.add(ok ? 'ok' : 'no');
+  if (ok) { T.correct++; T.combo++; T.bestCombo = Math.max(T.bestCombo, T.combo); beep('ok'); $('#tfLast').innerHTML = T.combo > 2 ? `連續答對 ${T.combo} 題！` : '答對了！'; }
+  else { T.combo = 0; if (!T.misses.find(m => m.id === it.id)) T.misses.push(it); addWrong(it.id); persist(); beep('bad'); $('#tfLast').innerHTML = `<b>剛剛那題應該是「${it.b ? '對' : '錯'}」</b>：${it.exp}`; }
+  $('#tScore').textContent = `答對 ${T.correct} 題`;
+  T.i++; showTF();
+}
+function tfEnd() {
+  T.over = true; stopTimers();
+  const stars = T.correct >= 14 ? 3 : T.correct >= 9 ? 2 : T.correct >= 4 ? 1 : 0;
+  showResult({ title: '時間到！', stars, msg: stars >= 2 ? '反應又快又準！' : '多玩幾次，速度會越來越快！', stats: [['答對', T.correct], ['作答', T.total], ['最高連對', T.bestCombo]], misses: T.misses.map(it => ({ u: it.uname, q: it.s, a: it.b ? '對' : '錯', exp: it.exp })), again: 'tf' });
+}
+
+/* ===== 結果 ===== */
+function showResult(r) {
+  stopTimers(); view = 'result';
+  if (r.stars >= 2) beep('win');
+  const lt = r.listTitle || '答錯的題目（已收進錯題本）';
+  app.innerHTML = `
+  <section class="res">
+    ${r.newStamp ? `<span class="stamp got newstamp">${r.newStamp.short}<br>過關</span><p style="margin:0;color:var(--stamp);font-weight:700">護照蓋章成功：${r.newStamp.name}</p>` : ''}
+    <h2>${r.title}</h2>
+    <div class="bigstars" aria-label="${r.stars} 顆星">${starStr(r.stars)}</div>
+    <p style="margin:0">${r.msg}</p>
+    <div class="stats">${r.stats.map(([k, v]) => `<div><b>${v}</b><span>${k}</span></div>`).join('')}</div>
+    <div class="row" style="justify-content:center">
+      <button class="btn" data-act="again" data-mode="${r.again}">再玩一次</button>
+      <button class="btn ghost" data-act="home">回首頁</button>
+    </div>
+  </section>
+  ${r.misses.length ? `<h2 class="sec">${lt}</h2><div class="list">${r.misses.map(m => `<div class="item">${m.u ? `<span class="u">${m.u}</span>` : ''}<p>${m.q}</p><p class="a">${r.listTitle ? '→ ' : '答案：'}${m.a}</p>${m.exp ? `<p style="color:var(--muted);font-size:14px">${m.exp}</p>` : ''}</div>`).join('')}</div>` : ''}`;
+  window.scrollTo({ top: 0 });
+}
+
+/* ===== 錯題本 ===== */
+let clearArmed = false;
+function wrongbook() {
+  stopTimers(); view = 'wrong'; clearArmed = false;
+  const items = save.wrong.map(fromId).filter(Boolean);
+  app.innerHTML = `
+  <div class="hud"><button class="link" data-act="home">← 回首頁</button><span class="title">錯題本</span><span class="tab">${items.length} 題</span></div>
+  ${items.length ? `
+    <p style="margin:0 0 12px;color:var(--muted)">重練時答對的題目會自動從錯題本移除。</p>
+    <div class="row"><button class="btn" data-act="review">重練這些題目</button><button class="btn ghost" data-act="clear" id="clearBtn">清空錯題本</button></div>
+    <div class="list">${items.map(it => `<div class="item"><span class="u">${it.uname}</span><p>${it.q}</p><p class="a">答案：${it.opts[it.ans]}</p><p style="color:var(--muted);font-size:14px">${it.exp}</p></div>`).join('')}</div>`
+    : `<div class="empty">錯題本目前是空的。去玩「闖關問答」或「快問快答」，答錯的題目會自動收進來。</div>`}`;
+}
+
+/* ===== 事件 ===== */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act;
+  if (a === 'home') home();
+  else if (a === 'sel') { sel = b.dataset.id; home(); }
+  else if (a === 'quiz') startQuiz(false);
+  else if (a === 'match') startMatch();
+  else if (a === 'tf') startTF();
+  else if (a === 'wrongbook') wrongbook();
+  else if (a === 'review') startQuiz(true);
+  else if (a === 'ans') answer(+b.dataset.k);
+  else if (a === 'next') nextQ();
+  else if (a === 'flip') flip(+b.dataset.n);
+  else if (a === 'tfa') tfAnswer(b.dataset.v === '1');
+  else if (a === 'again') ({ quiz: () => startQuiz(false), review: () => startQuiz(true), match: startMatch, tf: startTF })[b.dataset.mode]();
+  else if (a === 'sound') { save.sound = !save.sound; persist(); beep('ok'); }
+  else if (a === 'clear') {
+    if (!clearArmed) { clearArmed = true; b.textContent = '再按一次確認清空'; b.classList.add('danger'); }
+    else { save.wrong = []; persist(); wrongbook(); }
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (view === 'quiz') {
+    if (!Q.done) { const m = { '1': 0, '2': 1, '3': 2, '4': 3, a: 0, b: 1, c: 2, d: 3 }[k]; if (m !== undefined && m < Q.list[Q.idx].opts.length) answer(m); }
+    else if (k === 'enter' && document.activeElement?.id !== 'nextBtn') nextQ();
+  } else if (view === 'tf') {
+    if (k === 'o' || k === 'arrowleft') tfAnswer(true);
+    else if (k === 'x' || k === 'arrowright') tfAnswer(false);
+  }
+});
+
+updateBar();
+home();
+</script>
+</body>
+</html>
