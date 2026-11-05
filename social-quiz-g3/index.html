@@ -1,0 +1,629 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>三年級社會大冒險</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Huninn&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* Layout: a "闖關護照" — single centered column; units are passport pages with red ink stamps on a calm sea-blue ground. */
+:root{
+  --sea:#e6f1f3; --paper:#ffffff; --ink:#1c3243; --muted:#587082; --line:#c9dde2; --tint:#d6eaee;
+  --stamp:#c43d2b; --leaf:#24845a; --sun:#e8a92c;
+  --display:"Huninn","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sea:#0d1b24; --paper:#142836; --ink:#e4eef2; --muted:#98b0be; --line:#26404f; --tint:#1b3444;
+  --stamp:#ff7b64; --leaf:#5ccb91; --sun:#f3c25a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sea:#0d1b24; --paper:#142836; --ink:#e4eef2; --muted:#98b0be; --line:#26404f; --tint:#1b3444;
+  --stamp:#ff7b64; --leaf:#5ccb91; --sun:#f3c25a; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--sea);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+.wrap{max-width:880px;margin:0 auto}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;margin:0}
+
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:14px;border-bottom:1px dashed var(--line);margin-bottom:24px}
+.brand{font-family:var(--display);font-size:20px;background:none;border:0;padding:0}
+.bar .sp{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:4px 12px;font-size:14px}
+.chip b{color:var(--stamp);font-variant-numeric:tabular-nums}
+
+.hero{display:grid;gap:8px;margin-bottom:28px}
+.eyebrow{margin:0;font-size:13px;letter-spacing:.12em;color:var(--muted)}
+.hero h1{font-family:var(--display);font-size:clamp(34px,7vw,52px);line-height:1.15;font-weight:400}
+.hero h1 em{font-style:normal;color:var(--stamp)}
+.lede{margin:0;max-width:34em;color:var(--muted)}
+
+.sec{font-family:var(--display);font-weight:400;font-size:20px;margin:28px 0 12px}
+.units{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:560px){.units{grid-template-columns:repeat(2,1fr)}}
+.unit{display:grid;justify-items:start;gap:4px;text-align:left;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:14px;transition:border-color .15s,transform .15s}
+.unit:hover{transform:translateY(-2px)}
+.unit.on{border-color:var(--ink)}
+.unit .no{font-size:12px;letter-spacing:.1em;color:var(--muted)}
+.unit strong{font-size:16px;line-height:1.35}
+.stars{color:var(--sun);letter-spacing:2px;font-size:15px}
+.stars i{font-style:normal;color:var(--line)}
+.stamp{width:62px;height:62px;border-radius:50%;border:2px dashed var(--line);display:grid;place-items:center;font-family:var(--display);font-size:15px;color:var(--muted);margin-bottom:6px;text-align:center;line-height:1.1}
+.stamp.got{border:4px double var(--stamp);color:var(--stamp);transform:rotate(-12deg);background:color-mix(in srgb,var(--stamp) 9%,transparent)}
+
+.modes{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.mode{display:grid;gap:4px;text-align:left;background:var(--ink);color:var(--paper);border:0;border-radius:14px;padding:16px 16px 18px}
+.mode .big{font-family:var(--display);font-size:22px}
+.mode small{opacity:.8;font-size:14px}
+.mode.alt{background:var(--paper);color:var(--ink);border:2px solid var(--line)}
+.mode:hover{filter:brightness(1.08)}
+.note{margin-top:28px;font-size:13px;color:var(--muted)}
+@media (max-width:440px){.bar{gap:8px}.brand{font-size:18px}.chip{font-size:13px;padding:3px 10px}}
+
+/* play */
+.hud{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-bottom:10px;font-size:15px}
+.hud .title{font-weight:700;flex:1;min-width:0}
+.tab{font-variant-numeric:tabular-nums}
+.link{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.hearts{color:var(--stamp);letter-spacing:2px}
+.hearts i{font-style:normal;color:var(--line)}
+.timer{height:8px;background:var(--tint);border-radius:99px;overflow:hidden;margin-bottom:16px}
+.timer div{height:100%;width:100%;background:var(--leaf);transition:width .1s linear}
+.timer div.low{background:var(--stamp)}
+.qcard{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(18px,4vw,30px)}
+.qtag{margin:0 0 6px;font-size:13px;color:var(--muted);letter-spacing:.06em}
+.q{font-family:var(--display);font-weight:400;font-size:clamp(21px,4vw,27px);line-height:1.45;margin-bottom:20px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;background:var(--sea);border:2px solid var(--line);border-radius:12px;padding:12px 14px;min-height:56px}
+.opt b{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--paper);border:1px solid var(--line);font-size:14px}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--leaf);background:color-mix(in srgb,var(--leaf) 16%,var(--paper))}
+.opt.right b{background:var(--leaf);color:var(--paper);border-color:var(--leaf)}
+.opt.wrong{border-color:var(--stamp);background:color-mix(in srgb,var(--stamp) 13%,var(--paper))}
+.opt.wrong b{background:var(--stamp);color:var(--paper);border-color:var(--stamp)}
+.fb{margin-top:18px;padding:14px 16px;border-radius:12px;border-left:5px solid var(--leaf);background:var(--tint);display:grid;gap:6px;justify-items:start}
+.fb.bad{border-left-color:var(--stamp)}
+.fb strong{font-size:17px}
+.fb p{margin:0}
+.btn{background:var(--ink);color:var(--paper);border:0;border-radius:999px;padding:10px 22px;font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--ink)}
+.btn.danger{background:var(--stamp)}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+
+/* match */
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:560px){.grid{grid-template-columns:repeat(3,1fr)}}
+.card{position:relative;aspect-ratio:4/3.4;max-width:100%;border-radius:12px;border:2px solid var(--line);background:var(--ink);color:var(--paper);padding:8px;display:grid;place-items:center;text-align:center;font-size:14px;line-height:1.35}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+.card .back{font-family:var(--display);font-size:28px;opacity:.55}
+.card .face{display:none}
+.card.open,.card.done{background:var(--paper);color:var(--ink);animation:pop .25s ease-out}
+.card.open .back,.card.done .back{display:none}
+.card.open .face,.card.done .face{display:block}
+.card .face.t{font-family:var(--display);font-size:17px}
+.card.done{border-color:var(--leaf);background:color-mix(in srgb,var(--leaf) 14%,var(--paper))}
+.card.miss{border-color:var(--stamp)}
+.card .kind{position:absolute;top:5px;left:8px;font-size:11px;color:var(--muted)}
+
+/* true/false */
+.tfcard{background:var(--paper);border:3px solid var(--line);border-radius:18px;padding:clamp(22px,5vw,40px) clamp(18px,4vw,32px);min-height:170px;display:grid;place-items:center;text-align:center;transition:border-color .2s}
+.tfcard.ok{border-color:var(--leaf)}
+.tfcard.no{border-color:var(--stamp)}
+.tfcard p{font-family:var(--display);font-size:clamp(22px,4.4vw,30px);line-height:1.45;margin:0}
+.ox{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
+.ox button{border:0;border-radius:16px;padding:14px;display:grid;justify-items:center;gap:2px;color:var(--paper);font-size:15px}
+.ox .o{background:var(--leaf)}
+.ox .x{background:var(--stamp)}
+.ox span{font-family:var(--display);font-size:40px;line-height:1}
+.last{margin-top:14px;font-size:14px;color:var(--muted);min-height:3em}
+.last b{color:var(--stamp)}
+
+/* result & list */
+.res{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:clamp(20px,5vw,36px);display:grid;gap:14px;justify-items:center;text-align:center}
+.res h2{font-family:var(--display);font-weight:400;font-size:clamp(26px,5vw,34px)}
+.bigstars{font-size:46px;letter-spacing:6px;color:var(--sun);line-height:1}
+.bigstars i{font-style:normal;color:var(--line)}
+.stats{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px}
+.stats div{display:grid}
+.stats b{font-size:26px;font-variant-numeric:tabular-nums}
+.stats span{font-size:13px;color:var(--muted)}
+.newstamp{width:110px;height:110px;font-size:22px;animation:thump .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes thump{from{transform:scale(2.2) rotate(-30deg);opacity:0}to{transform:scale(1) rotate(-12deg);opacity:1}}
+.list{display:grid;gap:10px;margin-top:20px;text-align:left;width:100%}
+.item{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.item .u{font-size:12px;color:var(--muted)}
+.item p{margin:2px 0}
+.item .a{color:var(--leaf);font-weight:700}
+.empty{background:var(--paper);border:1px dashed var(--line);border-radius:14px;padding:28px;text-align:center;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="bar">
+    <button class="brand" data-act="home">三年級社會大冒險</button>
+    <span class="sp"></span>
+    <span class="chip">護照集章 <b id="stampCount">0/5</b></span>
+    <button class="chip" id="soundBtn" data-act="sound" aria-pressed="true">音效：開</button>
+  </header>
+  <main id="app"></main>
+</div>
+
+<script>
+/* ===== 題庫：mc = [題目, 正確答案, [錯誤選項×3], 解說]；tf = [敘述, 對/錯, 解說]；pairs = [名詞, 說明] ===== */
+const UNITS = [
+{ id:'u1', name:'家庭的組成', short:'家庭',
+  mc:[
+   ['爸爸的爸爸，我們要怎麼稱呼？','爺爺（祖父）',['外公','伯伯','舅舅'],'爸爸的父母是爺爺、奶奶，也叫祖父、祖母。'],
+   ['媽媽的爸爸，我們要怎麼稱呼？','外公（外祖父）',['爺爺','叔叔','姑丈'],'媽媽的父母是外公、外婆，也叫外祖父、外祖母。'],
+   ['爸爸的哥哥要怎麼稱呼？','伯伯',['叔叔','舅舅','姑丈'],'爸爸的哥哥叫伯伯，爸爸的弟弟叫叔叔。'],
+   ['爸爸的弟弟要怎麼稱呼？','叔叔',['伯伯','舅舅','姨丈'],'爸爸的弟弟叫叔叔，叔叔的太太叫嬸嬸。'],
+   ['爸爸的姊姊或妹妹要怎麼稱呼？','姑姑',['阿姨','舅媽','嬸嬸'],'爸爸的姊妹叫姑姑，媽媽的姊妹叫阿姨。'],
+   ['媽媽的哥哥或弟弟要怎麼稱呼？','舅舅',['叔叔','伯伯','姑丈'],'媽媽的兄弟叫舅舅，舅舅的太太叫舅媽。'],
+   ['媽媽的姊姊或妹妹要怎麼稱呼？','阿姨',['姑姑','嬸嬸','伯母'],'媽媽的姊妹叫阿姨，阿姨的先生叫姨丈。'],
+   ['爺爺、奶奶、爸爸、媽媽和孩子住在一起，叫做什麼家庭？','三代同堂家庭',['單親家庭','小家庭','隔代教養家庭'],'祖父母、父母、孩子三代住在一起，就是三代同堂。'],
+   ['只有爸爸、媽媽和孩子一起住的家庭，通常稱為？','小家庭',['三代同堂家庭','隔代教養家庭','單親家庭'],'由父母和孩子組成的家庭叫小家庭，現在很常見。'],
+   ['由爺爺奶奶照顧孫子，爸媽不在身邊的家庭，叫做？','隔代教養家庭',['小家庭','單親家庭','新住民家庭'],'爸媽可能在外地工作，由祖父母照顧孩子。'],
+   ['爸爸或媽媽其中一位和孩子一起生活的家庭，叫做？','單親家庭',['小家庭','三代同堂家庭','隔代教養家庭'],'單親家庭一樣充滿愛，家人互相照顧。'],
+   ['爸爸或媽媽來自其他國家的家庭，常被稱為？','新住民家庭',['單親家庭','小家庭','隔代教養家庭'],'新住民家庭讓我們有機會認識不同國家的文化。'],
+   ['用圖畫出家族成員和輩分關係的表，叫做？','家族樹（家族圖）',['課表','地圖','月曆'],'從家族樹可以清楚看出家人之間的關係。'],
+   ['家裡有新寶寶出生，家庭成員會有什麼變化？','家庭成員增加',['家庭成員減少','家人關係消失','一定要搬家'],'出生、結婚會讓成員增加；過世、搬出去住會讓成員減少。']
+  ],
+  tf:[
+   ['每個家庭的組成都一模一樣。',false,'家庭型態有很多種，每個家庭都不一樣。'],
+   ['媽媽的兄弟要叫舅舅。',true,'媽媽的哥哥或弟弟都叫舅舅。'],
+   ['爸爸的姊妹要叫阿姨。',false,'爸爸的姊妹叫姑姑；媽媽的姊妹才叫阿姨。'],
+   ['家人過世或搬出去住，家庭成員會減少。',true,'家庭成員會因為各種原因增加或減少。'],
+   ['不管是哪一種家庭，家人都應該互相尊重。',true,'每一種家庭都值得被尊重。'],
+   ['被領養的孩子不能算是家庭的一份子。',false,'透過領養成為家人，一樣是家庭的一份子。'],
+   ['家庭可以給我們生活照顧和情感支持。',true,'家庭有照顧、保護、教育和陪伴的功能。'],
+   ['伯伯是媽媽的哥哥。',false,'伯伯是爸爸的哥哥；媽媽的哥哥是舅舅。']
+  ],
+  pairs:[['爺爺','爸爸的爸爸'],['外婆','媽媽的媽媽'],['叔叔','爸爸的弟弟'],['舅舅','媽媽的兄弟'],['姑姑','爸爸的姊妹'],['阿姨','媽媽的姊妹'],['小家庭','父母和孩子同住'],['三代同堂','祖父母、父母、孩子同住']]
+},
+{ id:'u2', name:'家庭生活', short:'家事',
+  mc:[
+   ['家裡的家事應該由誰來做？','全家人一起分工合作',['只有媽媽','只有爸爸','都請別人做'],'家事是全家人的事，每個人都可以分擔。'],
+   ['三年級的小朋友適合分擔哪一項家事？','整理自己的書包和房間',['修理電線','開車去買菜','自己用瓦斯爐煮飯'],'選擇安全、自己做得到的家事來分擔。'],
+   ['和家人意見不同時，最好的做法是？','好好說出想法，互相討論',['大聲吵架','不理家人','摔東西生氣'],'用溝通代替爭吵，才能找到大家都接受的辦法。'],
+   ['家人生病時，我們可以怎麼做？','幫忙倒水、說關心的話',['在旁邊大聲玩鬧','假裝沒看到','吵著要家人陪我玩'],'用行動關心家人，家人會覺得很溫暖。'],
+   ['訂定家庭規範（家規）的目的是什麼？','讓家人生活更和諧、有秩序',['讓孩子不能玩','用來處罰家人','只讓爸媽比較輕鬆'],'家規讓每個人知道該怎麼做，生活更順利。'],
+   ['「回家先寫功課」「吃飯時不看手機」屬於什麼？','家庭規範',['交通規則','學校校規','國家法律'],'每個家庭可以一起討論出自己的家規。'],
+   ['全家一起出遊、吃飯聊天，可以讓家人之間？','更親近、感情更好',['更疏遠','更常吵架','變得陌生'],'常常一起活動，家人會更了解彼此。'],
+   ['臺灣的母親節在每年幾月的第二個星期日？','5 月',['3 月','8 月','10 月'],'母親節在五月的第二個星期日。'],
+   ['臺灣的父親節是哪一天？','8 月 8 日',['5 月 8 日','4 月 4 日','9 月 28 日'],'「八八」唸起來像「爸爸」，所以父親節在 8 月 8 日。'],
+   ['全家人團圓吃年夜飯的節日是？','農曆新年（除夕）',['中秋節','端午節','清明節'],'除夕晚上全家團圓吃年夜飯，迎接新年。'],
+   ['下列哪一種行為是在「尊重家人」？','進家人房間前先敲門',['偷看家人的手機','隨便拿家人的東西','家人說話時一直插嘴'],'尊重家人的隱私和物品，相處會更愉快。'],
+   ['爸媽工作很辛苦，回到家時我們可以？','主動問候，幫忙做家事',['吵著要買玩具','一直看電視不理人','抱怨晚餐太晚'],'一句問候和一點幫忙，就是體貼的表現。'],
+   ['聽爺爺奶奶分享以前的生活，可以讓我們？','了解家庭的過去和傳統',['浪費時間','變得不快樂','忘記家人'],'長輩的故事是家庭重要的回憶。']
+  ],
+  tf:[
+   ['做家事只是大人的責任，小孩不用幫忙。',false,'家庭是大家的，每個人都可以分擔家事。'],
+   ['完成自己分配到的家事，就是負責任的表現。',true,'說到做到，就是負責任。'],
+   ['進家人房間前先敲門，是尊重的表現。',true,'尊重家人的隱私，相處更愉快。'],
+   ['和家人吵架時，摔東西可以解決問題。',false,'冷靜下來好好說，才能解決問題。'],
+   ['每個家庭的家規可能都不一樣。',true,'家規是每個家庭依自己的需要討論出來的。'],
+   ['使用刀子、瓦斯爐等危險的家事，要在大人陪同下進行。',true,'安全第一，危險的事情要有大人在旁邊。'],
+   ['家人之間不需要說「謝謝」和「對不起」。',false,'越親近的人，越要記得說謝謝和對不起。'],
+   ['臺灣的父親節是 8 月 8 日。',true,'「八八」和「爸爸」的發音很像。']
+  ],
+  pairs:[['家事分工','全家一起分擔家事'],['家庭規範','家人一起遵守的約定'],['母親節','5 月第二個星期日'],['父親節','8 月 8 日'],['除夕','全家團圓吃年夜飯'],['先敲門','尊重家人的隱私'],['溝通','說出想法、互相了解'],['倒杯水','家人生病時的關心']]
+},
+{ id:'u3', name:'學校環境與人員', short:'學校',
+  mc:[
+   ['在學校身體不舒服或受傷時，應該去哪裡？','健康中心',['圖書館','福利社','禮堂'],'健康中心有護理師可以幫忙處理。'],
+   ['想借書或安靜閱讀，可以到學校的哪裡？','圖書館',['健康中心','警衛室','操場'],'圖書館要保持安靜，借的書要愛惜並準時歸還。'],
+   ['負責管理全校事務、帶領學校發展的人是？','校長',['導師','護理師','警衛'],'校長是學校的領導者。'],
+   ['在健康中心照顧受傷、生病同學的人是？','護理師',['警衛','廚工','圖書館志工'],'護理師會幫忙擦藥、量體溫，必要時通知家長。'],
+   ['在校門口守護大家進出安全的人是？','警衛',['校長','護理師','導師'],'警衛會注意陌生人進出，保護學校安全。'],
+   ['負責課程安排、教學和成績的處室是？','教務處',['學務處','總務處','輔導室'],'教務處負責和「學習」有關的事。'],
+   ['負責學生生活常規、整潔和學校活動的處室是？','學務處',['教務處','總務處','輔導室'],'學務處負責生活教育、衛生、體育和各種活動。'],
+   ['教室的電燈或桌椅壞了，要請哪一個處室修理？','總務處',['教務處','學務處','輔導室'],'總務處負責校舍和設備的維修與管理。'],
+   ['心情不好、遇到困難想找人談談，可以到？','輔導室',['總務處','福利社','警衛室'],'輔導老師會傾聽，並協助我們解決困擾。'],
+   ['在班上照顧我們學習和生活、最常陪伴我們的老師是？','導師',['校長','護理師','警衛'],'有問題可以先找導師幫忙。'],
+   ['全校師生集合、舉行升旗典禮的地方通常是？','操場（司令臺前）',['廁所','圖書館','健康中心'],'升旗典禮時要排好隊、保持安靜。'],
+   ['逃生指示燈上綠色的奔跑小人，代表什麼？','逃生方向',['廁所位置','禁止進入','垃圾分類'],'緊急時跟著逃生指示燈的方向走。'],
+   ['自然教室、電腦教室這類專科教室，主要用來？','上特定的課',['睡午覺','吃午餐','停放腳踏車'],'專科教室有上課需要的特別設備。']
+  ],
+  tf:[
+   ['學校裡只有老師和學生，沒有其他工作人員。',false,'還有校長、護理師、警衛、廚工、志工等很多人。'],
+   ['在走廊上奔跑追逐，很容易發生危險。',true,'走廊上要慢慢走，靠右行走。'],
+   ['向圖書館借的書要愛惜，並準時歸還。',true,'圖書館的書是大家共用的。'],
+   ['發現校園設備壞掉，可以告訴老師，請總務處修理。',true,'主動回報，可以避免別人受傷。'],
+   ['健康中心是借書的地方。',false,'健康中心照顧受傷生病的同學；借書要去圖書館。'],
+   ['學校的志工爸爸媽媽也是幫助我們的人。',true,'看到志工要記得說謝謝。'],
+   ['學校比較少人去的角落，下課可以一個人去探險。',false,'偏僻角落容易發生危險，最好結伴並遠離。'],
+   ['輔導室可以協助我們解決心裡的困擾。',true,'有煩惱不要悶在心裡，可以找輔導老師。']
+  ],
+  pairs:[['健康中心','受傷生病去這裡'],['圖書館','借書和閱讀'],['校長','帶領全校的人'],['護理師','照顧受傷生病的同學'],['警衛','守護校門安全'],['教務處','課程和成績'],['學務處','生活常規和活動'],['總務處','修理設備']]
+},
+{ id:'u4', name:'學習與班級生活', short:'班級',
+  mc:[
+   ['上課前先看看課本要教的內容，叫做？','預習',['複習','考試','罰寫'],'預習可以讓上課更容易聽懂。'],
+   ['把學過的內容再讀一遍、多練習，叫做？','複習',['預習','發表','打掃'],'常複習，學過的東西才不容易忘記。'],
+   ['上課聽到重點時，好的學習方法是？','做筆記',['和同學聊天','在課本上塗鴉','發呆'],'把重點寫下來，複習時更方便。'],
+   ['遇到不懂的問題，最好的做法是？','請教老師或查資料',['假裝懂了','直接放棄','抄同學的答案'],'勇敢發問，才能真正學會。'],
+   ['班上負責整潔、打掃工作的幹部是？','衛生股長',['學藝股長','康樂股長','風紀股長'],'衛生股長會提醒大家打掃，保持教室乾淨。'],
+   ['班上負責提醒大家維持秩序的幹部是？','風紀股長',['衛生股長','學藝股長','康樂股長'],'風紀股長幫忙維持上課和排隊的秩序。'],
+   ['班上負責布置教室、壁報等學習事務的幹部通常是？','學藝股長',['衛生股長','風紀股長','康樂股長'],'學藝股長常負責教室布置和學習相關的工作。'],
+   ['班上負責安排同樂會、休閒活動的幹部是？','康樂股長',['衛生股長','風紀股長','學藝股長'],'康樂股長讓班上的活動更有趣。'],
+   ['全班一起討論班上的事情、做出決定的會議叫做？','班會',['朝會','家長會','運動會'],'班會讓每個人都有機會表達意見。'],
+   ['班會表決時，常用的決定方式是？','少數服從多數，並尊重少數',['誰大聲就聽誰的','只聽班長的','猜拳決定一切'],'用多數決做決定，同時也要尊重少數人的意見。'],
+   ['班會中想要發言時，應該怎麼做？','舉手，等主席同意再說',['直接大聲說','打斷別人','小聲跟旁邊同學說'],'遵守發言規則，會議才會順利。'],
+   ['班規應該由誰一起討論、一起遵守？','全班同學和老師',['只有班長','隔壁班同學','只有校長'],'大家一起訂的班規，大家都會更願意遵守。'],
+   ['分組合作時，下列哪一種做法最好？','分工合作，聽聽別人的想法',['自己全部做完','什麼都不做','只聽自己的'],'每個人都出一份力，合作才會成功。']
+  ],
+  tf:[
+   ['預習可以幫助我們上課更容易聽懂。',true,'先知道要學什麼，上課更能抓到重點。'],
+   ['擔任班級幹部，是為大家服務的機會。',true,'幹部是為班上服務，不是用來管別人的。'],
+   ['班會表決後，少數人的意見就完全不用理會。',false,'結果依多數決，但仍要尊重少數人的意見。'],
+   ['自己的功課應該自己完成，不抄別人的。',true,'自己寫才能真正學會。'],
+   ['班規只有班長需要遵守。',false,'班規是全班一起遵守的約定。'],
+   ['別人發言時，我們要專心聽，不插嘴。',true,'專心聽是尊重別人的表現。'],
+   ['網路上查到的資料一定都正確。',false,'網路資訊要多比對幾個來源，不一定都正確。'],
+   ['分組報告時，每個人都應該完成自己負責的工作。',true,'每個人負責，小組才會成功。']
+  ],
+  pairs:[['預習','上課前先看'],['複習','學過再練習'],['衛生股長','負責打掃整潔'],['風紀股長','提醒維持秩序'],['康樂股長','安排同樂會'],['班會','全班討論做決定'],['多數決','少數服從多數'],['班規','全班一起訂的約定']]
+},
+{ id:'u5', name:'人際相處與安全', short:'安全',
+  mc:[
+   ['和同學發生衝突時，第一步應該？','先讓自己冷靜下來',['馬上打回去','大聲罵對方','跟大家說他的壞話'],'冷靜之後，才能好好說出自己的感受。'],
+   ['不小心撞到同學，應該說什麼？','對不起',['活該','不關我的事','快走開'],'做錯事勇敢道歉，是負責任的表現。'],
+   ['看到同學被欺負，應該怎麼做？','告訴老師或大人',['一起嘲笑','假裝沒看到','拍下來傳到網路'],'告訴大人是在幫助同學。'],
+   ['在臺灣，遇到火災或需要救護車，要撥打？','119',['110','113','104'],'119 是消防和緊急救護電話。'],
+   ['遇到壞人、需要報警時，要撥打？','110',['119','113','165'],'110 是報案電話，警察會來幫忙。'],
+   ['發生地震時，在教室裡應該做什麼動作？','趴下、掩護、穩住',['馬上衝出教室','站在窗戶旁邊','搭電梯下樓'],'躲在桌子下保護頭部，等搖晃停止再依指示疏散。'],
+   ['過馬路時應該走在哪裡？','斑馬線（行人穿越道）',['車子之間','馬路中央','停車格'],'走斑馬線，並看清楚左右來車。'],
+   ['行人號誌亮紅燈時，應該怎麼做？','停下來等待',['快跑過去','邊走邊看手機','跟著別人闖過去'],'紅燈停、綠燈行，才能保護自己。'],
+   ['陌生人說要載你回家或送你禮物，應該？','拒絕，並立刻告訴大人',['跟他走','收下禮物','把家裡地址告訴他'],'不跟陌生人走，也不收陌生人的東西。'],
+   ['想加入同學一起玩，比較好的說法是？','「我可以和你們一起玩嗎？」',['直接搶走玩具','在旁邊生悶氣','叫別人走開'],'有禮貌地詢問，比較容易交到朋友。'],
+   ['同學的外表或習慣和我們不一樣時，應該？','尊重並接納彼此的不同',['取笑他','排擠他','給他取難聽的綽號'],'每個人都不一樣，互相尊重才能好好相處。'],
+   ['在網路上，下列哪一種資料不應該隨便告訴別人？','家裡地址和電話',['喜歡的顏色','最愛的卡通','喜歡的水果'],'個人資料要保護好，不隨便公開。'],
+   ['被別人一直開不舒服的玩笑時，可以怎麼做？','清楚說「我不喜歡，請停止」，並告訴大人',['默默忍耐','開他更過分的玩笑','動手打他'],'勇敢表達感受，並向大人求助。']
+  ],
+  tf:[
+   ['和同學意見不同時，可以用討論來解決。',true,'說出想法、聽聽對方，就能找到辦法。'],
+   ['欺負別人只要說是開玩笑就沒關係。',false,'讓人不舒服的玩笑就是欺負，不應該做。'],
+   ['發生火災或需要救護車時，要撥打 119。',true,'119 是消防和緊急救護電話。'],
+   ['地震時要馬上搭電梯逃生。',false,'地震、火災時都不可以搭電梯。'],
+   ['過馬路要走斑馬線，並看清楚左右來車。',true,'遵守交通規則，保護自己的安全。'],
+   ['陌生人給的糖果可以放心吃。',false,'不要吃陌生人給的東西，並告訴大人。'],
+   ['自己的身體自己作主，不舒服的碰觸要勇敢說「不」。',true,'說「不」之後，要馬上告訴信任的大人。'],
+   ['看到同學被欺負時告訴老師，是不好的「打小報告」。',false,'告訴老師是在幫助同學，是正確的做法。']
+  ],
+  pairs:[['119','火災和緊急救護'],['110','報警'],['趴下掩護穩住','地震保護動作'],['斑馬線','行人過馬路的地方'],['紅燈','停下來等待'],['對不起','做錯事時說'],['謝謝','別人幫忙時說'],['告訴大人','看到同學被欺負時']]
+}
+];
+
+/* ===== 工具 ===== */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const starStr = n => '★'.repeat(n) + '<i>' + '★'.repeat(3 - n) + '</i>';
+const unitsOf = sel => sel === 'all' ? UNITS : UNITS.filter(u => u.id === sel);
+const selName = sel => sel === 'all' ? '全部單元混合' : UNITS.find(u => u.id === sel).name;
+
+const KEY = 'g3-social-review-v1';
+let save = { best: {}, stamps: {}, wrong: [], sound: true };
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s) save = Object.assign(save, s); } catch (e) {}
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(save)); } catch (e) {} updateBar(); }
+function addWrong(id) { if (!save.wrong.includes(id)) save.wrong.push(id); }
+function removeWrong(id) { save.wrong = save.wrong.filter(x => x !== id); }
+
+let ac = null;
+function beep(kind) {
+  if (!save.sound) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const seq = { ok: [[660, 0], [880, .09]], bad: [[230, 0], [175, .12]], win: [[523, 0], [659, .11], [784, .22], [1046, .33]], flip: [[520, 0]] }[kind] || [[500, 0]];
+    seq.forEach(([f, t]) => {
+      const o = ac.createOscillator(), g = ac.createGain(), at = ac.currentTime + t;
+      o.type = 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(.18, at + .02); g.gain.exponentialRampToValueAtTime(.0001, at + .2);
+      o.connect(g).connect(ac.destination); o.start(at); o.stop(at + .22);
+    });
+  } catch (e) {}
+}
+
+let timers = [];
+function stopTimers() { timers.forEach(clearInterval); timers.forEach(clearTimeout); timers = []; }
+function updateBar() {
+  $('#stampCount').textContent = Object.keys(save.stamps).filter(k => save.stamps[k]).length + '/' + UNITS.length;
+  const b = $('#soundBtn'); b.textContent = '音效：' + (save.sound ? '開' : '關'); b.setAttribute('aria-pressed', save.sound);
+}
+
+function mcObj(u, i) { const [q, c, w, exp] = u.mc[i]; const opts = shuffle([c, ...w]); return { id: `${u.id}|mc|${i}`, uname: u.name, q, opts, ans: opts.indexOf(c), exp }; }
+function tfObj(u, i) { const [s, b, exp] = u.tf[i]; return { id: `${u.id}|tf|${i}`, uname: u.name, q: '是非題：' + s, s, b, opts: ['對', '錯'], ans: b ? 0 : 1, exp }; }
+function fromId(id) { const [uid, t, i] = id.split('|'); const u = UNITS.find(x => x.id === uid); if (!u) return null; const arr = t === 'mc' ? u.mc : u.tf; if (!arr[+i]) return null; return t === 'mc' ? mcObj(u, +i) : tfObj(u, +i); }
+
+/* ===== 首頁 ===== */
+let sel = 'all';
+function home() {
+  stopTimers(); view = 'home';
+  const cards = UNITS.map((u, i) => `
+    <button class="unit ${sel === u.id ? 'on' : ''}" data-act="sel" data-id="${u.id}" aria-pressed="${sel === u.id}">
+      <span class="stamp ${save.stamps[u.id] ? 'got' : ''}">${save.stamps[u.id] ? u.short + '<br>過關' : u.short}</span>
+      <span class="no">單元 ${i + 1}</span><strong>${u.name}</strong>
+      <span class="stars" aria-label="最佳 ${save.best[u.id] || 0} 顆星">${starStr(save.best[u.id] || 0)}</span>
+    </button>`).join('');
+  app.innerHTML = `
+  <section class="hero">
+    <p class="eyebrow">三年級上學期・社會科期中考複習</p>
+    <h1>闖關、配對、快問快答<br>把<em>家庭和學校</em>記進腦袋裡</h1>
+    <p class="lede">先選一個單元，再挑一種玩法。每個單元的「闖關問答」拿到兩顆星以上，就能在護照上蓋一個章，五個章全部集滿就準備好考試了！</p>
+  </section>
+  <h2 class="sec">1. 選單元</h2>
+  <div class="units">${cards}
+    <button class="unit ${sel === 'all' ? 'on' : ''}" data-act="sel" data-id="all" aria-pressed="${sel === 'all'}">
+      <span class="stamp">全部</span><span class="no">總複習</span><strong>全部單元混合</strong><span class="stars" style="color:var(--muted);letter-spacing:0;font-size:13px">隨機出題</span>
+    </button>
+  </div>
+  <h2 class="sec">2. 選玩法 <span style="font-size:14px;color:var(--muted);font-family:var(--body)">目前：${selName(sel)}</span></h2>
+  <div class="modes">
+    <button class="mode" data-act="quiz"><span class="big">闖關問答</span><small>10 題選擇題・3 顆愛心・答越快分數越高</small></button>
+    <button class="mode" data-act="match"><span class="big">翻牌配對</span><small>翻開 12 張牌，把名詞和說明配成對</small></button>
+    <button class="mode" data-act="tf"><span class="big">快問快答</span><small>60 秒是非題，看你能答對幾題</small></button>
+    <button class="mode alt" data-act="wrongbook"><span class="big">錯題本</span><small>${save.wrong.length ? `目前有 ${save.wrong.length} 題要再練習` : '答錯的題目會自動收進來'}</small></button>
+  </div>
+  <p class="note">題目依三年級上學期社會科常見範圍整理（家庭的組成、家庭生活、學校環境與人員、學習與班級生活、人際相處與安全）。各版本課本的單元名稱和進度不同，請以老師上課內容為準。電腦可用鍵盤 1～4 選答案、Enter 下一題；快問快答用 O／X 鍵。</p>`;
+}
+
+/* ===== 闖關問答 ===== */
+let Q = null, view = 'home';
+function startQuiz(review) {
+  let list;
+  if (review) {
+    list = shuffle(save.wrong).map(fromId).filter(Boolean).slice(0, 20);
+    if (!list.length) return wrongbook();
+  } else {
+    const pool = []; unitsOf(sel).forEach(u => u.mc.forEach((_, i) => pool.push(mcObj(u, i))));
+    list = shuffle(pool).slice(0, 10);
+  }
+  Q = { review, unit: review ? null : sel, title: review ? '錯題重練' : selName(sel), list, idx: 0, hearts: 3, score: 0, combo: 0, bestCombo: 0, correct: 0, misses: [], done: false, t: 25 };
+  renderQ();
+}
+function renderQ() {
+  stopTimers(); view = 'quiz';
+  const it = Q.list[Q.idx];
+  app.innerHTML = `
+  <div class="hud">
+    <button class="link" data-act="home">← 回首頁</button>
+    <span class="title">${Q.title}</span>
+    <span class="tab">第 ${Q.idx + 1} / ${Q.list.length} 題</span>
+    ${Q.review ? '' : `<span class="hearts" id="hearts" aria-label="剩下 ${Q.hearts} 顆愛心">${'♥'.repeat(Q.hearts)}<i>${'♥'.repeat(3 - Q.hearts)}</i></span>`}
+    <span class="tab" id="score">${Q.score} 分</span>
+  </div>
+  ${Q.review ? '' : '<div class="timer" aria-hidden="true"><div id="tbar"></div></div>'}
+  <article class="qcard">
+    <p class="qtag">${it.uname}</p>
+    <h2 class="q">${it.q}</h2>
+    <div class="opts">${it.opts.map((o, k) => `<button class="opt" data-act="ans" data-k="${k}"><b>${'ABCD'[k]}</b><span>${o}</span></button>`).join('')}</div>
+    <div id="fb"></div>
+  </article>`;
+  Q.done = false; Q.t = 25;
+  if (!Q.review) {
+    timers.push(setInterval(() => {
+      Q.t = Math.max(0, Q.t - .1);
+      const bar = $('#tbar'); if (bar) { bar.style.width = (Q.t / 25 * 100) + '%'; bar.classList.toggle('low', Q.t < 7); }
+      if (Q.t <= 0) answer(-1);
+    }, 100));
+  }
+}
+function answer(k) {
+  if (Q.done) return; Q.done = true; stopTimers();
+  const it = Q.list[Q.idx], ok = k === it.ans;
+  document.querySelectorAll('.opt').forEach((b, i) => { b.disabled = true; if (i === it.ans) b.classList.add('right'); else if (i === k) b.classList.add('wrong'); });
+  if (ok) {
+    Q.correct++; Q.combo++; Q.bestCombo = Math.max(Q.bestCombo, Q.combo);
+    Q.score += 100 + (Q.review ? 0 : Math.round(Q.t) * 4) + (Q.combo > 1 ? (Q.combo - 1) * 20 : 0);
+    if (Q.review) removeWrong(it.id);
+    beep('ok');
+  } else {
+    Q.combo = 0; if (!Q.review) Q.hearts--; Q.misses.push(it); addWrong(it.id); beep('bad');
+  }
+  persist();
+  const end = Q.idx + 1 >= Q.list.length || Q.hearts <= 0;
+  const head = ok ? (Q.combo > 1 ? `答對了！連續答對 ${Q.combo} 題` : '答對了！') : (k < 0 ? '時間到！' : '差一點！');
+  $('#fb').innerHTML = `<div class="fb ${ok ? '' : 'bad'}" role="status"><strong>${head}</strong>${ok ? '' : `<p>正確答案是「${it.opts[it.ans]}」。</p>`}<p>${it.exp}</p><button class="btn" data-act="next" id="nextBtn">${end ? (Q.hearts <= 0 ? '愛心用完了，看結果' : '看結果') : '下一題'} →</button></div>`;
+  const s = $('#score'); if (s) s.textContent = Q.score + ' 分';
+  const h = $('#hearts'); if (h) h.innerHTML = '♥'.repeat(Q.hearts) + '<i>' + '♥'.repeat(3 - Q.hearts) + '</i>';
+  $('#nextBtn').focus({ preventScroll: true });
+}
+function nextQ() {
+  Q.idx++;
+  if (Q.idx >= Q.list.length || Q.hearts <= 0) return quizResult();
+  renderQ();
+}
+function quizResult() {
+  const rate = Q.correct / Q.list.length;
+  const stars = rate >= .9 ? 3 : rate >= .7 ? 2 : rate >= .5 ? 1 : 0;
+  let newStamp = null;
+  if (!Q.review && Q.unit !== 'all') {
+    save.best[Q.unit] = Math.max(save.best[Q.unit] || 0, stars);
+    if (stars >= 2 && !save.stamps[Q.unit]) { save.stamps[Q.unit] = true; newStamp = UNITS.find(u => u.id === Q.unit); }
+    persist();
+  }
+  const msg = stars === 3 ? '太厲害了，完全掌握！' : stars === 2 ? '很不錯，再複習一下錯題就更穩了！' : stars === 1 ? '有進步空間，看看下面的解說再挑戰一次！' : '先別灰心，從錯題本開始慢慢練！';
+  showResult({
+    title: Q.review ? '錯題重練完成' : Q.hearts <= 0 ? '愛心用完了' : '闖關完成', stars, msg, newStamp,
+    stats: [['答對', `${Q.correct}/${Q.list.length}`], ['分數', Q.score], ['最高連對', Q.bestCombo]],
+    misses: Q.misses.map(it => ({ u: it.uname, q: it.q, a: it.opts[it.ans], exp: it.exp })),
+    again: Q.review ? 'review' : 'quiz'
+  });
+}
+
+/* ===== 翻牌配對 ===== */
+let M = null;
+function startMatch() {
+  stopTimers(); view = 'match';
+  const pool = []; unitsOf(sel).forEach(u => u.pairs.forEach(p => pool.push({ t: p[0], d: p[1], u: u.name })));
+  const pick = shuffle(pool).slice(0, 6);
+  const cards = shuffle(pick.flatMap((p, k) => [{ k, side: 't', text: p.t }, { k, side: 'd', text: p.d }]));
+  M = { cards, open: [], moves: 0, found: 0, pairs: pick.length, start: Date.now(), lock: false };
+  app.innerHTML = `
+  <div class="hud">
+    <button class="link" data-act="home">← 回首頁</button>
+    <span class="title">翻牌配對・${selName(sel)}</span>
+    <span class="tab" id="mPairs">配對 0/${M.pairs}</span>
+    <span class="tab" id="mMoves">翻了 0 次</span>
+    <span class="tab" id="mTime">0 秒</span>
+  </div>
+  <p style="margin:0 0 12px;color:var(--muted);font-size:14px">每次翻兩張，把「名詞」和它的「說明」配成一對。</p>
+  <div class="grid">${cards.map((c, n) => `<button class="card" data-act="flip" data-n="${n}" aria-label="第 ${n + 1} 張牌"><span class="back">?</span><span class="kind" hidden>${c.side === 't' ? '名詞' : '說明'}</span><span class="face ${c.side}">${c.text}</span></button>`).join('')}</div>`;
+  timers.push(setInterval(() => { const el = $('#mTime'); if (el) el.textContent = Math.round((Date.now() - M.start) / 1000) + ' 秒'; }, 500));
+}
+function flip(n) {
+  if (M.lock) return;
+  const c = M.cards[n], el = document.querySelector(`.card[data-n="${n}"]`);
+  if (c.done || M.open.includes(n)) return;
+  M.open.push(n); el.classList.add('open'); el.querySelector('.kind').hidden = false; el.setAttribute('aria-label', c.text); beep('flip');
+  if (M.open.length < 2) return;
+  M.moves++; $('#mMoves').textContent = `翻了 ${M.moves} 次`;
+  const [a, b] = M.open.map(i => M.cards[i]);
+  const els = M.open.map(i => document.querySelector(`.card[data-n="${i}"]`));
+  if (a.k === b.k && a.side !== b.side) {
+    a.done = b.done = true; els.forEach(e => { e.classList.remove('open'); e.classList.add('done'); e.disabled = true; });
+    M.open = []; M.found++; $('#mPairs').textContent = `配對 ${M.found}/${M.pairs}`; beep('ok');
+    if (M.found === M.pairs) timers.push(setTimeout(matchResult, 600));
+  } else {
+    M.lock = true; els.forEach(e => e.classList.add('miss')); beep('bad');
+    timers.push(setTimeout(() => {
+      els.forEach(e => { e.classList.remove('open', 'miss'); e.querySelector('.kind').hidden = true; });
+      M.open = []; M.lock = false;
+    }, 950));
+  }
+}
+function matchResult() {
+  const secs = Math.round((Date.now() - M.start) / 1000);
+  const stars = M.moves <= M.pairs + 3 ? 3 : M.moves <= M.pairs + 7 ? 2 : 1;
+  const pairs = []; const seen = new Set();
+  M.cards.forEach(c => { if (!seen.has(c.k)) { seen.add(c.k); const t = M.cards.find(x => x.k === c.k && x.side === 't'), d = M.cards.find(x => x.k === c.k && x.side === 'd'); pairs.push({ u: '', q: t.text, a: d.text, exp: '' }); } });
+  showResult({ title: '全部配對完成', stars, msg: stars === 3 ? '記憶力超強！' : '再玩一次，試試用更少次數完成！', stats: [['翻牌次數', M.moves], ['花費時間', secs + ' 秒']], misses: pairs, listTitle: '這次配對的名詞', again: 'match' });
+}
+
+/* ===== 快問快答（是非題） ===== */
+let T = null;
+function startTF() {
+  stopTimers(); view = 'tf';
+  const pool = []; unitsOf(sel).forEach(u => u.tf.forEach((_, i) => pool.push(tfObj(u, i))));
+  T = { base: pool, deck: shuffle(pool), i: 0, left: 60, correct: 0, total: 0, combo: 0, bestCombo: 0, misses: [], over: false };
+  app.innerHTML = `
+  <div class="hud">
+    <button class="link" data-act="home">← 回首頁</button>
+    <span class="title">快問快答・${selName(sel)}</span>
+    <span class="tab" id="tLeft">剩 60 秒</span>
+    <span class="tab" id="tScore">答對 0 題</span>
+  </div>
+  <div class="timer" aria-hidden="true"><div id="tbar"></div></div>
+  <div class="tfcard" id="tfcard"><p id="tfq"></p></div>
+  <div class="ox">
+    <button class="o" data-act="tfa" data-v="1"><span>O</span>對（O 鍵）</button>
+    <button class="x" data-act="tfa" data-v="0"><span>X</span>錯（X 鍵）</button>
+  </div>
+  <p class="last" id="tfLast" aria-live="polite">看到敘述就快速判斷對或錯！</p>`;
+  showTF();
+  timers.push(setInterval(() => {
+    T.left = Math.max(0, T.left - .1);
+    $('#tbar').style.width = (T.left / 60 * 100) + '%'; $('#tbar').classList.toggle('low', T.left < 10);
+    $('#tLeft').textContent = `剩 ${Math.ceil(T.left)} 秒`;
+    if (T.left <= 0) tfEnd();
+  }, 100));
+}
+function showTF() { if (T.i >= T.deck.length) { T.deck = shuffle(T.base); T.i = 0; } $('#tfq').textContent = T.deck[T.i].s; }
+function tfAnswer(v) {
+  if (T.over) return;
+  const it = T.deck[T.i], ok = v === it.b; T.total++;
+  const card = $('#tfcard'); card.classList.remove('ok', 'no'); void card.offsetWidth; card.classList.add(ok ? 'ok' : 'no');
+  if (ok) { T.correct++; T.combo++; T.bestCombo = Math.max(T.bestCombo, T.combo); beep('ok'); $('#tfLast').innerHTML = T.combo > 2 ? `連續答對 ${T.combo} 題！` : '答對了！'; }
+  else { T.combo = 0; if (!T.misses.find(m => m.id === it.id)) T.misses.push(it); addWrong(it.id); persist(); beep('bad'); $('#tfLast').innerHTML = `<b>剛剛那題應該是「${it.b ? '對' : '錯'}」</b>：${it.exp}`; }
+  $('#tScore').textContent = `答對 ${T.correct} 題`;
+  T.i++; showTF();
+}
+function tfEnd() {
+  T.over = true; stopTimers();
+  const stars = T.correct >= 14 ? 3 : T.correct >= 9 ? 2 : T.correct >= 4 ? 1 : 0;
+  showResult({ title: '時間到！', stars, msg: stars >= 2 ? '反應又快又準！' : '多玩幾次，速度會越來越快！', stats: [['答對', T.correct], ['作答', T.total], ['最高連對', T.bestCombo]], misses: T.misses.map(it => ({ u: it.uname, q: it.s, a: it.b ? '對' : '錯', exp: it.exp })), again: 'tf' });
+}
+
+/* ===== 結果 ===== */
+function showResult(r) {
+  stopTimers(); view = 'result';
+  if (r.stars >= 2) beep('win');
+  const lt = r.listTitle || '答錯的題目（已收進錯題本）';
+  app.innerHTML = `
+  <section class="res">
+    ${r.newStamp ? `<span class="stamp got newstamp">${r.newStamp.short}<br>過關</span><p style="margin:0;color:var(--stamp);font-weight:700">護照蓋章成功：${r.newStamp.name}</p>` : ''}
+    <h2>${r.title}</h2>
+    <div class="bigstars" aria-label="${r.stars} 顆星">${starStr(r.stars)}</div>
+    <p style="margin:0">${r.msg}</p>
+    <div class="stats">${r.stats.map(([k, v]) => `<div><b>${v}</b><span>${k}</span></div>`).join('')}</div>
+    <div class="row" style="justify-content:center">
+      <button class="btn" data-act="again" data-mode="${r.again}">再玩一次</button>
+      <button class="btn ghost" data-act="home">回首頁</button>
+    </div>
+  </section>
+  ${r.misses.length ? `<h2 class="sec">${lt}</h2><div class="list">${r.misses.map(m => `<div class="item">${m.u ? `<span class="u">${m.u}</span>` : ''}<p>${m.q}</p><p class="a">${r.listTitle ? '→ ' : '答案：'}${m.a}</p>${m.exp ? `<p style="color:var(--muted);font-size:14px">${m.exp}</p>` : ''}</div>`).join('')}</div>` : ''}`;
+  window.scrollTo({ top: 0 });
+}
+
+/* ===== 錯題本 ===== */
+let clearArmed = false;
+function wrongbook() {
+  stopTimers(); view = 'wrong'; clearArmed = false;
+  const items = save.wrong.map(fromId).filter(Boolean);
+  app.innerHTML = `
+  <div class="hud"><button class="link" data-act="home">← 回首頁</button><span class="title">錯題本</span><span class="tab">${items.length} 題</span></div>
+  ${items.length ? `
+    <p style="margin:0 0 12px;color:var(--muted)">重練時答對的題目會自動從錯題本移除。</p>
+    <div class="row"><button class="btn" data-act="review">重練這些題目</button><button class="btn ghost" data-act="clear" id="clearBtn">清空錯題本</button></div>
+    <div class="list">${items.map(it => `<div class="item"><span class="u">${it.uname}</span><p>${it.q}</p><p class="a">答案：${it.opts[it.ans]}</p><p style="color:var(--muted);font-size:14px">${it.exp}</p></div>`).join('')}</div>`
+    : `<div class="empty">錯題本目前是空的。去玩「闖關問答」或「快問快答」，答錯的題目會自動收進來。</div>`}`;
+}
+
+/* ===== 事件 ===== */
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act;
+  if (a === 'home') home();
+  else if (a === 'sel') { sel = b.dataset.id; home(); }
+  else if (a === 'quiz') startQuiz(false);
+  else if (a === 'match') startMatch();
+  else if (a === 'tf') startTF();
+  else if (a === 'wrongbook') wrongbook();
+  else if (a === 'review') startQuiz(true);
+  else if (a === 'ans') answer(+b.dataset.k);
+  else if (a === 'next') nextQ();
+  else if (a === 'flip') flip(+b.dataset.n);
+  else if (a === 'tfa') tfAnswer(b.dataset.v === '1');
+  else if (a === 'again') ({ quiz: () => startQuiz(false), review: () => startQuiz(true), match: startMatch, tf: startTF })[b.dataset.mode]();
+  else if (a === 'sound') { save.sound = !save.sound; persist(); beep('ok'); }
+  else if (a === 'clear') {
+    if (!clearArmed) { clearArmed = true; b.textContent = '再按一次確認清空'; b.classList.add('danger'); }
+    else { save.wrong = []; persist(); wrongbook(); }
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (view === 'quiz') {
+    if (!Q.done) { const m = { '1': 0, '2': 1, '3': 2, '4': 3, a: 0, b: 1, c: 2, d: 3 }[k]; if (m !== undefined && m < Q.list[Q.idx].opts.length) answer(m); }
+    else if (k === 'enter' && document.activeElement?.id !== 'nextBtn') nextQ();
+  } else if (view === 'tf') {
+    if (k === 'o' || k === 'arrowleft') tfAnswer(true);
+    else if (k === 'x' || k === 'arrowright') tfAnswer(false);
+  }
+});
+
+updateBar();
+home();
+</script>
+</body>
+</html>
